@@ -16,22 +16,18 @@ export function MainPage() {
 
   return (
     <Box
-      width="100%"
+      width="25%"
       display={'flex'}
       flexDirection={'column'}
       alignContent={'start'}
     >
-      <p>{a}</p>
-      <p>
+      <Box>{a}</Box>
         <Button variant="contained" onClick={btnHandler} sx={{ color: 'red' }}>
           +++
         </Button>
-      </p>
-      <p>
         <TextField onChange={(e) => textFieldChangeHandler(e.target.value)}>
           asdfas
         </TextField>
-      </p>
     </Box>
   );
 }

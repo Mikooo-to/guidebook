@@ -4,8 +4,13 @@ import { Box, Button, TextField } from '@mui/material';
 export function MainPage() {
   let [a, setA] = useState(0);
 
-  function btnHandler() {
+  function btnHandlerA() {
     a++;
+    setA(a);
+  }
+
+  function btnHandlerB() {
+    a--;
     setA(a);
   }
 
@@ -22,8 +27,11 @@ export function MainPage() {
       alignContent={'start'}
     >
       <Box>{a}</Box>
-        <Button variant="contained" onClick={btnHandler} sx={{ color: 'red' }}>
+        <Button variant="contained" onClick={btnHandlerA} sx={{ color: 'red' }}>
           +++
+        </Button>
+        <Button variant="contained" onClick={btnHandlerB} sx={{ color: 'green' }}>
+          ---
         </Button>
         <TextField onChange={(e) => textFieldChangeHandler(e.target.value)}>
           asdfas

@@ -18,7 +18,7 @@ function App() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" color="inherit" component="div">
-            Some cool text
+            Home:Teapots:Teapot#3869 
           </Typography>
         </Toolbar>
       </AppBar>

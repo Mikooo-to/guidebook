@@ -18,9 +18,14 @@ export function MainPage() {
     setA(a);
   }
 
+  function msgShow() {
+    console.log("Чи ти справді думав що це спрацює?");
+  }
+
   function textFieldChangeHandler(v: string) {
-    console.log(v);
-    setA(Number(v));
+    if(Number(v) >= 0){
+      setA(Number(v));
+    }
   }
 
   return (
@@ -78,7 +83,7 @@ export function MainPage() {
         />
       </Box>
 
-      <Button style={{ marginLeft: '41%' }} variant="contained" sx={{ color: 'white' , fontSize: "20px"}}>
+      <Button style={{ marginLeft: '45%' }} variant="contained" sx={{ color: 'white' , fontSize: "20px"}} onClick={msgShow}>
             Order
       </Button>
     </Box>

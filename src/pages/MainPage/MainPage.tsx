@@ -18,8 +18,7 @@ export function MainPage() {
     setA(a);
   }
 
-  function msgShow() {
-    console.log("Чи ти справді думав що це спрацює?");
+  function msgShow(){
   }
 
   function textFieldChangeHandler(v: string) {

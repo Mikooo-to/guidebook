@@ -69,11 +69,11 @@ export function MainPage() {
         <Box sx={{marginBottom: '20px'}}/>
         <Slider sx={{ width: '300px'}}
           aria-label="Size(ml)"
-          defaultValue={750}
-          shiftStep={250}
-          step={250}
-          min={500}
-          max={1000}
+          defaultValue={200}
+          shiftStep={0}
+          step={100}
+          min={200}
+          max={500}
           valueLabelDisplay="on"
         />
       </Box>

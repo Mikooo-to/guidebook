@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Slider } from '@mui/material';
-
+import redtpot from '../../images/redtpot.png';
+import blacktpot from '../../images/blacktpot.png';
+import greytpot from '../../images/greytpot.png';
+import whitetpot from '../../images/whitetpot.png';
+import greentpot from '../../images/greentpot.png';
+import bluetpot from '../../images/bluetpot.png';
+import yellowtpot from '../../images/yellowtpot.png';
 import { yellow } from '@mui/material/colors';
 
 export function MainPage() {
   let [a, setA] = useState(0);
-
+  const [selectedImage, setSelectedImage] = useState<string>(redtpot);
   function btnHandlerA() {
     a++;
     setA(a);
@@ -27,8 +33,41 @@ export function MainPage() {
     }
   }
 
+
+  function handleImageChange(event: React.ChangeEvent<HTMLInputElement>){
+    const value = event.target.value;
+    switch (value) {
+      case 'White':
+        setSelectedImage(whitetpot);
+        console.log("blah");
+        break;
+      case 'Black':
+        setSelectedImage(blacktpot);
+      break;
+      case 'Grey':
+        setSelectedImage(greytpot);
+      break;
+      case 'Red':
+        setSelectedImage(redtpot);
+        break;
+      case 'Green':
+        setSelectedImage(greentpot);
+      break;
+      case 'Yellow':
+        setSelectedImage(yellowtpot);
+      break;
+      case 'Blue':
+        setSelectedImage(bluetpot);
+      break;
+      default:
+        setSelectedImage(redtpot);
+      break;
+    }
+  };
+
   return (
     <Box style={{ marginLeft: '30px'}}>
+      <img src={selectedImage} alt="Teapot" style={{ width: "500px" }} />
 
       <Box
         width="25%"
@@ -58,6 +97,7 @@ export function MainPage() {
           <RadioGroup sx={{ marginBottom: "20px"}}
             aria-labelledby="demo-radio-buttons-group-label"
             name="radio-buttons-group"
+            onChange={handleImageChange}
           >
           <FormControlLabel value="White" control={<Radio />} label="White" sx={{ color: "black" }}/>
           <FormControlLabel value="Black" control={<Radio />} label="Black" sx={{ color: "black" }}/>

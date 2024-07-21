@@ -9,7 +9,7 @@ export function MainPage() {
     setA(a);
   }
 
-  function textFieldChangeHandler(v: string) {
+  function textFieldChangeHandler(v: string): void {
     console.log(v);
     setA(Number(v));
   }
@@ -22,12 +22,17 @@ export function MainPage() {
       alignContent={'start'}
     >
       <Box>{a}</Box>
-        <Button variant="contained" onClick={btnHandler} sx={{ color: 'red' }}>
-          +++
-        </Button>
-        <TextField onChange={(e) => textFieldChangeHandler(e.target.value)}>
-          asdfas
-        </TextField>
+      <Box>
+        {a}-{a}
+      </Box>
+      <Button variant="contained" onClick={btnHandler} sx={{ color: 'red' }}>
+        +++
+      </Button>
+      <TextField
+        onChange={(e) => {
+          textFieldChangeHandler(e.target.value);
+        }}
+      ></TextField>
     </Box>
   );
 }

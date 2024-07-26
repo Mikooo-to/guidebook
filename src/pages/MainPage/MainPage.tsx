@@ -1,33 +1,15 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField } from '@mui/material';
-
-export function MainPage() {
-  let [a, setA] = useState(0);
-
-  function btnHandler() {
-    a++;
-    setA(a);
-  }
-
-  function textFieldChangeHandler(v: string) {
-    console.log(v);
-    setA(Number(v));
-  }
-
-  return (
-    <Box
-      width="25%"
-      display={'flex'}
-      flexDirection={'column'}
-      alignContent={'start'}
-    >
-      <Box>{a}</Box>
-        <Button variant="contained" onClick={btnHandler} sx={{ color: 'red' }}>
-          +++
-        </Button>
-        <TextField onChange={(e) => textFieldChangeHandler(e.target.value)}>
-          asdfas
-        </TextField>
+//import background from 'c:\Users\User\Downloads\background.jpg'
+export function MainPage(){
+  return ( 
+   <Box className="bg-image">
+      <Box className="button-container">
+        <button>Button 1</button>
+        <button>Button 2</button>
+        <button>Button 3</button>
+        <button>Button 4</button>
+      </Box>
     </Box>
   );
 }

@@ -30,12 +30,10 @@ button {
   cursor: pointer;
 }
 
-button:nth-child(odd) {
+buttonOdd {
   align-self: flex-start;
 }
 
-button:nth-child(even) {
+buttonEven {
   align-self: flex-end;
-
-
 }

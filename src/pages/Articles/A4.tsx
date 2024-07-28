@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 export function A4(){
     const redir = useNavigate();
     function Homeredir(){
-        redir('/Home')
+        redir('/')
     }
     return(
         <Box>   

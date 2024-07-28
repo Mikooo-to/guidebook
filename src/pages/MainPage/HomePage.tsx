@@ -18,6 +18,7 @@ export function HomePage(){
     redir('/A4')
   }
   return ( 
+  <Box className="bg-cover">
    <Box className="bg-image">
       <Box className="button-container">
         <button onClick={A1redir}>A1</button>
@@ -25,9 +26,15 @@ export function HomePage(){
         <button onClick={A3redir}>A3</button>
         <button onClick={A4redir}>A4</button>
       </Box>
+    </Box>
       <TextWithBackground
         text='asdfasdf'
       />
     </Box>
+
+    
+   
+
   );
+   
 }

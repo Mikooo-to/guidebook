@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Button, TextField } from '@mui/material';
 import { TextWithBackground } from '../../components/TextWithBackground/TextWithBackground';
 import { useNavigate } from 'react-router-dom';
+//import title from '../../images/title.jpg';
 //import background from 'c:\Users\User\Downloads\background.jpg'
 export function HomePage(){
   const redir = useNavigate();
@@ -18,16 +19,15 @@ export function HomePage(){
     redir('/A4')
   }
   return ( 
-   <Box className="bg-image">
-      <Box className="button-container">
-        <button onClick={A1redir}>A1</button>
-        <button onClick={A2redir}>A2</button>
-        <button onClick={A3redir}>A3</button>
-        <button onClick={A4redir}>A4</button>
+      <Box className="bg-cover">
+        <Box className="bg-image">
+          <Box className="button-container">
+            <button onClick={A1redir}>центри гуманітарної допомоги</button>
+            <button onClick={A2redir}>торгівельні центри та магазини</button>
+            <button onClick={A3redir}>пам’ятки та цікавинки</button>
+            <button onClick={A4redir}>відпочинок</button>
+          </Box>
+        </Box>
       </Box>
-      <TextWithBackground
-        text='asdfasdf'
-      />
-    </Box>
   );
 }

@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 export function A2(){
     const redir = useNavigate();
     function Homeredir(){
-        redir('/Home')
+        redir(-1);
     }
     return(
         <Box>   
-            <button onClick={Homeredir}>Home</button>
+            <button onClick={Homeredir}>Back</button>
             <Box className="A2" style={{fontSize:"40px"}}>
-                2
+                <h1>торгівельні центри та магазини</h1>
             </Box>
         </Box>
     );

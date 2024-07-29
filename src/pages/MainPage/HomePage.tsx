@@ -6,26 +6,26 @@ import { useNavigate } from 'react-router-dom';
 //import background from 'c:\Users\User\Downloads\background.jpg'
 export function HomePage(){
   const redir = useNavigate();
-  function A1redir(){
-    redir('/A1')
+  function P1ButtonHandler(){
+    redir('/P1')
   }
-  function A2redir(){
-    redir('/A2')
+  function P2ButtonHandler(){
+    redir('/P2')
   }
-  function A3redir(){
-    redir('/A3')
+  function P3ButtonHandler(){
+    redir('/P3')
   }
-  function A4redir(){
-    redir('/A4')
+  function P4ButtonHandler(){
+    redir('/P4')
   }
   return ( 
       <Box className="bg-cover">
         <Box className="bg-image">
           <Box className="button-container">
-            <button onClick={A1redir}>центри гуманітарної допомоги</button>
-            <button onClick={A2redir}>торгівельні центри та магазини</button>
-            <button onClick={A3redir}>пам’ятки та цікавинки</button>
-            <button onClick={A4redir}>відпочинок</button>
+            <button onClick={P1ButtonHandler}>центри гуманітарної допомоги</button>
+            <button onClick={P2ButtonHandler}>торгівельні центри та магазини</button>
+            <button onClick={P3ButtonHandler}>пам’ятки та цікавинки</button>
+            <button onClick={P4ButtonHandler}>відпочинок</button>
           </Box>
         </Box>
       </Box>

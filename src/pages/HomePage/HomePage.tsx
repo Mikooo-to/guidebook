@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import backgroundImage from '../../images/background.jpg';
 import styled from '@emotion/styled';
+import { PageLinkBtn } from '../../components/PageLinkBtn/PageLinkBtn';
 
 // TODO: refactor paths routes and pages to get them from single source
 
@@ -29,21 +30,12 @@ export function HomePage() {
   return (
     <HomePageContainer>
       {pages.map((p) => (
-        <button
+        <PageLinkBtn
           key={p.path}
-          style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.7)',
-            padding: '15px 30px',
-            paddingLeft: '70px',
-            fontSize: '20px',
-            color: 'white',
-            cursor: 'pointer',
-            alignSelf: 'flex-start',
-          }}
+          text={p.text}
           onClick={() => navigate(p.path)}
-        >
-          {p.text}
-        </button>
+          styleOverride={{ alignSelf: 'flex-end' }}
+        />
       ))}
     </HomePageContainer>
   );

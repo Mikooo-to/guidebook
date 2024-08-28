@@ -1,20 +1,29 @@
 import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import backgroundImage from '../../images/background.jpg';
+
+const pages = [
+  {
+    path: '/P1',
+    text: 'центри гуманітарної допомоги',
+  },
+  {
+    path: '/P2',
+    text: 'торгівельні центри та магазини',
+  },
+  {
+    path: '/P3',
+    text: 'пам’ятки та цікавинки',
+  },
+  {
+    path: '/P4',
+    text: 'відпочинок',
+  },
+];
+
 export function HomePage() {
-  const redir = useNavigate();
-  function P1ButtonHandler() {
-    redir('/P1');
-  }
-  function P2ButtonHandler() {
-    redir('/P2');
-  }
-  function P3ButtonHandler() {
-    redir('/P3');
-  }
-  function P4ButtonHandler() {
-    redir('/P4');
-  }
+  const navigate = useNavigate();
+
   return (
     <Box
       sx={{
@@ -32,23 +41,24 @@ export function HomePage() {
         alignSelf: 'flex-start',
       }}
     >
-      <button
-        style={{
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          padding: '15px 30px',
-          paddingLeft: '70px',
-          fontSize: '20px',
-          color: 'white',
-          cursor: 'pointer',
-          alignSelf: 'flex-start',
-        }}
-        onClick={P1ButtonHandler}
-      >
-        центри гуманітарної допомоги
-      </button>
-      <button onClick={P2ButtonHandler}>торгівельні центри та магазини</button>
-      <button onClick={P3ButtonHandler}>пам’ятки та цікавинки</button>
-      <button onClick={P4ButtonHandler}>відпочинок</button>
+      {pages.map((p) => (
+        <>
+          <button
+            style={{
+              backgroundColor: 'rgba(0, 0, 0, 0.7)',
+              padding: '15px 30px',
+              paddingLeft: '70px',
+              fontSize: '20px',
+              color: 'white',
+              cursor: 'pointer',
+              alignSelf: 'flex-start',
+            }}
+            onClick={() => navigate(p.path)}
+          >
+            {p.text}
+          </button>
+        </>
+      ))}
     </Box>
   );
 }

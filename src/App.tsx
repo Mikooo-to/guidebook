@@ -10,7 +10,7 @@ import { Box } from '@mui/material';
 
 const App = () => {
   const header = <Box sx={{ height: '3em' }}>header</Box>;
-  // TODO: refactor paths routes and elements
+  // TODO: refactor paths routes and pages to get them from single source
   return (
     <MainLayout header={header}>
       <Router>

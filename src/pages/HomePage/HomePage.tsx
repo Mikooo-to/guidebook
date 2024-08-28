@@ -2,6 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import backgroundImage from '../../images/background.jpg';
 import styled from '@emotion/styled';
 
+// TODO: refactor paths routes and pages to get them from single source
+
 const pages = [
   {
     path: '/P1',

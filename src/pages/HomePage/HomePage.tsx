@@ -1,6 +1,6 @@
-import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import backgroundImage from '../../images/background.jpg';
+import styled from '@emotion/styled';
 
 const pages = [
   {
@@ -25,40 +25,38 @@ export function HomePage() {
   const navigate = useNavigate();
 
   return (
-    <Box
-      sx={{
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundSize: 'contain',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center',
-        height: '100vh',
-        width: '100vw',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        backgroundColor: 'black',
-        justifyContent: 'space-between',
-        alignSelf: 'flex-start',
-      }}
-    >
+    <HomePageContainer>
       {pages.map((p) => (
-        <>
-          <button
-            style={{
-              backgroundColor: 'rgba(0, 0, 0, 0.7)',
-              padding: '15px 30px',
-              paddingLeft: '70px',
-              fontSize: '20px',
-              color: 'white',
-              cursor: 'pointer',
-              alignSelf: 'flex-start',
-            }}
-            onClick={() => navigate(p.path)}
-          >
-            {p.text}
-          </button>
-        </>
+        <button
+          key={p.path}
+          style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            padding: '15px 30px',
+            paddingLeft: '70px',
+            fontSize: '20px',
+            color: 'white',
+            cursor: 'pointer',
+            alignSelf: 'flex-start',
+          }}
+          onClick={() => navigate(p.path)}
+        >
+          {p.text}
+        </button>
       ))}
-    </Box>
+    </HomePageContainer>
   );
 }
+
+const HomePageContainer = styled.div`
+  background-image: url(${backgroundImage});
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: black;
+  justify-content: space-between;
+  align-self: flex-start;
+`;

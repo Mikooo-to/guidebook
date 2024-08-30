@@ -1,54 +1,38 @@
-import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import backgroundImage from '../../images/background.jpg';
+import styled from '@emotion/styled';
+import { PageLinkBtn } from '../../components/PageLinkBtn/PageLinkBtn';
+import { pagesPathsAndNames } from '../../const';
+
+// TODO: refactor paths routes and pages to get them from single source
+
 export function HomePage() {
-  const redir = useNavigate();
-  function P1ButtonHandler() {
-    redir('/P1');
-  }
-  function P2ButtonHandler() {
-    redir('/P2');
-  }
-  function P3ButtonHandler() {
-    redir('/P3');
-  }
-  function P4ButtonHandler() {
-    redir('/P4');
-  }
+  const navigate = useNavigate();
+
   return (
-    <Box
-      sx={{
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundSize: 'contain',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center',
-        height: '100vh',
-        width: '100vw',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        backgroundColor: 'black',
-        justifyContent: 'space-between',
-        alignSelf: 'flex-start',
-      }}
-    >
-      <button
-        style={{
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          padding: '15px 30px',
-          paddingLeft: '70px',
-          fontSize: '20px',
-          color: 'white',
-          cursor: 'pointer',
-          alignSelf: 'flex-start',
-        }}
-        onClick={P1ButtonHandler}
-      >
-        центри гуманітарної допомоги
-      </button>
-      <button onClick={P2ButtonHandler}>торгівельні центри та магазини</button>
-      <button onClick={P3ButtonHandler}>пам’ятки та цікавинки</button>
-      <button onClick={P4ButtonHandler}>відпочинок</button>
-    </Box>
+    <HomePageContainer>
+      {pagesPathsAndNames.map((p) => (
+        <PageLinkBtn
+          key={p.path}
+          text={p.linkText}
+          onClick={() => navigate(p.path)}
+          styleOverride={{ alignSelf: 'flex-end' }}
+        />
+      ))}
+    </HomePageContainer>
   );
 }
+
+const HomePageContainer = styled.div`
+  background-image: url(${backgroundImage});
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: black;
+  justify-content: space-between;
+  align-self: flex-start;
+`;

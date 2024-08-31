@@ -21,7 +21,6 @@ export function DesktopLayout({ header, mainPart }: MainLayoutProps) {
 const GlobalContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
   background-color: gray;
 `;
 
@@ -43,7 +42,4 @@ const MainContainer = styled.div`
 
   display: flex;
   flex-direction: column;
-  align-items: center;
-  align-self: center;
-  align-items: start;
 `;

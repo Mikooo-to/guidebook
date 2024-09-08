@@ -1,0 +1,73 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'SPA http S3 upload'
+
+Parameters:
+  TargetBucketName:
+    Description: 'Target bucket name'
+    Type: String
+    Default: 'app.example.com'
+
+Resources:
+  # Create the bucket to contain the website HTML
+  S3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Ref TargetBucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+
+  BucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Ref TargetBucketName
+      PolicyDocument:
+        Id: PolicyBucketGuidebookFrontend
+        Version: 2012-10-17
+        Statement:
+          - Sid: PublicReadForGetBucketObjects
+            Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Sub 'arn:aws:s3:::${S3Bucket}/*'
+
+
+  # Create an IAM user with Access Keys to enable automated deployment of the website to this bucket
+  PublishUser:
+    Type: 'AWS::IAM::User'
+    Properties:
+      Policies:
+        - PolicyName: !Sub 'publish-to-${TargetBucketName}'
+          PolicyDocument:
+            Statement:
+              - Action: 's3:*'
+                Effect: Allow
+                Resource:
+                  - !Sub 'arn:aws:s3:::${S3Bucket}'
+                  - !Sub 'arn:aws:s3:::${S3Bucket}/*'
+
+  PublishCredentials:
+    Type: 'AWS::IAM::AccessKey'
+    Properties:
+      UserName: !Ref PublishUser
+
+Outputs:
+  Bucket:
+    Description: 'S3 Bucket Name'
+    Value: !Ref S3Bucket
+  BucketUrl:
+    Description: 'S3 Bucket Url'
+    Value: !GetAtt 'S3Bucket.WebsiteURL'
+  AccessKeyId:
+    Description: 'S3 Access Key'
+    Value: !Ref PublishCredentials
+  AccessKeySecret:
+    Description: 'S3 Secret Key'
+    Value: !GetAtt PublishCredentials.SecretAccessKey

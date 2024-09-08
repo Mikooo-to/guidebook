@@ -1,0 +1,10 @@
+button {
+  background-color: rgba(0, 0, 0, 0.7);
+  border: none;
+  padding: 15px 30px;
+  padding-left: 70px;
+  font-size: 20px;
+  color: white;
+  cursor: pointer;
+  align-self: flex-start;
+}

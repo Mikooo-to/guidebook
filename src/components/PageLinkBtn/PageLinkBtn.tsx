@@ -17,7 +17,7 @@ export function PageLinkBtn({
   );
 }
 
-const PageLinkBtnContainer = styled.button`
+const PageLinkBtnContainer = styled.div`
   background-color: rgba(0, 0, 0, 0.7);
   padding: 15px 30px;
   padding-left: 70px;

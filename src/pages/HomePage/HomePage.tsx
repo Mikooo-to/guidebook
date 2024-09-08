@@ -1,38 +1,35 @@
 import { useNavigate } from 'react-router-dom';
-import backgroundImage from '../../images/background.jpg';
 import styled from '@emotion/styled';
 import { PageLinkBtn } from '../../components/PageLinkBtn/PageLinkBtn';
 import { pagesPathsAndNames } from '../../const';
-
-// TODO: refactor paths routes and pages to get them from single source
+import { useMediaQuery } from '@mui/material';
 
 export function HomePage() {
   const navigate = useNavigate();
+  const isDesktopOrLaptop = useMediaQuery('(min-width: 1224px)');
 
   return (
-    <HomePageContainer>
+    <HomePageContainer
+      buttonsPosition={isDesktopOrLaptop ? 'flex-start' : 'flex-end'}
+    >
       {pagesPathsAndNames.map((p) => (
         <PageLinkBtn
           key={p.path}
           text={p.linkText}
           onClick={() => navigate(p.path)}
-          styleOverride={{ alignSelf: 'flex-end' }}
         />
       ))}
     </HomePageContainer>
   );
 }
 
-const HomePageContainer = styled.div`
-  background-image: url(${backgroundImage});
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+const HomePageContainer = styled.div<{
+  buttonsPosition: 'flex-start' | 'flex-end';
+}>`
   height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  background-color: black;
+  align-items: ${({ buttonsPosition }) => buttonsPosition};
   justify-content: space-between;
-  align-self: flex-start;
 `;

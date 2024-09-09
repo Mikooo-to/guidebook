@@ -1,13 +1,14 @@
 name: AWS S3 bucket deployment
 on:
-  push:
+  pull_request:
     branches:
       - master
-    paths:
-      - "frontend/**"
+    types:
+      - closed
 
 jobs:
   build:
+    if: github.event.pull_request.merged
     runs-on: ubuntu-latest
     container:
       image: node:20-alpine    

@@ -22,7 +22,6 @@ jobs:
           cd frontend
           npm ci
           npm run build
-          npm run generate
 
       - name: Install AWS CLI
         run: |

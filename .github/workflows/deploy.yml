@@ -10,8 +10,6 @@ jobs:
   build:
     if: github.event.pull_request.merged
     runs-on: ubuntu-latest
-    container:
-      image: node:20-alpine    
 
     steps:
       - name: Checkout
@@ -22,11 +20,6 @@ jobs:
           cd frontend
           npm ci
           npm run build
-
-      - name: Install AWS CLI
-        run: |
-          apk add --no-cache python3 py3-pip
-          pip3 install awscli          
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4

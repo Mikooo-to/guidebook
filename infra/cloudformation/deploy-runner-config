@@ -1,0 +1,9 @@
+# this file contains env config for deploy-runner.sh script
+# ------------------------------------------------------------
+# REGION - AWS region to deploy CloudFormation resources
+# APP_ID - AWS CloudFormation stack name prefix
+# AWS_PROFILE - which local AWS CLI profile to use, if not set aws cli will use default profile
+# ------------------------------------------------------------
+REGION="eu-central-1"
+APP_ID="guidebook"
+AWS_PROFILE=guidebook

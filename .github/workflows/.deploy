@@ -1,0 +1,44 @@
+name: AWS S3 bucket deployment
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "frontend/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: node:20-alpine    
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build
+        run: |
+          cd frontend
+          npm ci
+          npm run build
+          npm run generate
+
+      - name: Install AWS CLI
+        run: |
+          apk add --no-cache python3
+          pip3 install --upgrade pip
+          pip3 install awscli          
+
+      - name: Configure AWS Credentials
+        uses: aws-actions@configure-aws-credentials@v4
+        with: 
+          aws-session-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{secrets.AWS_REGION}}
+
+      - name: Deploy to S3
+        run: aws s3 sync frontend/dist s3://${{secrets.AWS_S3_BUCKET_NAME }} --delete
+
+
+
+

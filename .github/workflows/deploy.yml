@@ -7,7 +7,7 @@ on:
       - closed
 
 jobs:
-  build:
+  deploy-frontend:
     if: github.event.pull_request.merged
     runs-on: ubuntu-latest
 
@@ -15,21 +15,48 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build
+      - name: Cache frontend files
+        id: cache-frontend
+        uses: actions/cache@v4
+        env: 
+          cache-name: cache-frontend-files
+        with:
+          path: ~/frontend
+          key: ${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('src/**/*') }}
+
+      - if: ${{ steps.cache-frontend.outputs.cache-hit == 'true' }}
+        name: No frontend changes found. Use cached. Skip frontend deployment.
+        continue-on-error: true
+        run: echo 'No frontend changes found. Skip frontend build and deployment.'
+
+      - if: ${{ steps.cache-frontend.outputs.cache-hit != 'true' }}
+        name: Build
         run: |
           cd frontend
           npm ci
           npm run build
 
-      - name: Configure AWS Credentials
+      - if: ${{ steps.cache-frontend.outputs.cache-hit != 'true' }}
+        name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with: 
           aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{vars.AWS_REGION}}
 
-      - name: Deploy to S3
+      - if: ${{ steps.cache-frontend.outputs.cache-hit != 'true' }}
+        name: Deploy to S3
         run: aws s3 sync frontend/build s3://${{vars.AWS_S3_BUCKET_NAME }} --delete
+
+  deploy-api:
+    if: github.event.pull_request.merged
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+
 
 
 

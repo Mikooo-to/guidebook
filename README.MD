@@ -4,8 +4,8 @@
 /infra
 
 
-# IF you want to create stack using aws cli and cloudformation:
-## first, get aws cli and configure aws profile
+# How to make a new deployment
+<!-- ## first, get aws cli and configure aws profile
 ```shell
 aws configure --profile guidebook
 ```
@@ -13,11 +13,11 @@ aws configure --profile guidebook
 ## then create cloudformation stack
 ```shell
 ./infra/cloudformation/deploy-runner.sh update <cloud-formation-stack-name>
-```
+``` -->
 
 
-# OR use aws cdk
-## first (once), get aws cli and configure aws profile
+use aws cdk: 
+## first (once), get aws cli according to aws docs (google it ) and then configure aws profile
 ```shell
 aws configure --profile guidebook
 ```
@@ -49,5 +49,6 @@ cdk synth --profile guidebook
 cdk deploy --profile guidebook
 ```
 
-#
-then you can deploy by merging to github master leveraging github workflows
+## then go to the aws console and create aws credentials for the user ***-deployer
+
+you can deploy by merging to github master leveraging github workflows using created credentials as secrets

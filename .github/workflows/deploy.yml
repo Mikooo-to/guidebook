@@ -21,11 +21,11 @@ jobs:
         env: 
           cache-name: cache-frontend-files
         with:
-          path: ~/frontend
+          path: frontend/
           key: ${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('src/**/*') }}
 
       - if: ${{ steps.cache-frontend.outputs.cache-hit == 'true' }}
-        name: No frontend changes found. Use cached. Skip frontend deployment.
+        name: Check frontend changes
         continue-on-error: true
         run: echo 'No frontend changes found. Skip frontend build and deployment.'
 

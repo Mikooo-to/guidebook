@@ -22,7 +22,7 @@ jobs:
           cache-name: cache-frontend-files
         with:
           path: frontend/
-          key: ${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('src/**/*') }}
+          key: ${{ hashFiles('frontend/package-lock.json') }}-${{ hashFiles('frontend/src/**/*') }}
 
       - if: ${{ steps.cache-frontend.outputs.cache-hit == 'true' }}
         name: Check frontend changes

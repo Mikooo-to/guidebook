@@ -50,11 +50,6 @@ export class MyStack extends cdk.Stack {
     }))
         
     
-    // // Bucket to store lambdas
-    // const bucketForLambdas = new s3.Bucket(this, lambdasBucketName, {
-    //   removalPolicy: cdk.RemovalPolicy.DESTROY
-    // })    
-    
     // Lambda function - get articles
     const lambdaCommonRole = new iam.Role(this, `${projectName}-lambdarole`, {
       assumedBy: new iam.ServicePrincipal("lambda.amazonaws.com")
@@ -73,7 +68,7 @@ export class MyStack extends cdk.Stack {
       })
     )
     
-    const lambdaFnGetArticles = new lambda.Function(this, `${projectName}-lambda-get-articles`, {
+    const lambdaFnMain = new lambda.Function(this, `main`, {
       code: lambda.AssetCode.fromAsset(lambdasPath),
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: handlers.getArticles,
@@ -97,7 +92,8 @@ export class MyStack extends cdk.Stack {
       ]
     }))
     
-    new cdk.CfnOutput(this, "Bucket For Frontend", { value: bucketForFrontend.bucketName });
     new cdk.CfnOutput(this, "Bucket Url", { value: bucketForFrontend.bucketWebsiteUrl });    
+    new cdk.CfnOutput(this, "Bucket Name For Frontend", { value: bucketForFrontend.bucketName });
+    new cdk.CfnOutput(this, "lambdaFnMain Arn", { value: lambdaFnMain.functionArn });    
   }
 }

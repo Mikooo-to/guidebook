@@ -56,6 +56,35 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Cache api files
+        id: cache-api
+        uses: actions/cache@v4
+        env: 
+          cache-name: cache-api-files
+        with:
+          path: api/
+          key: ${{ hashFiles('api/package-lock.json') }}-${{ hashFiles('api/src/**/*') }}
+
+      - if: ${{ steps.cache-api.outputs.cache-hit == 'true' }}
+        name: Check api changes
+        continue-on-error: true
+        run: echo 'No api changes found. Skip api build and deployment.'
+
+      - if: ${{ steps.cache-api.outputs.cache-hit != 'true' }}
+        name: Build
+        run: |
+          cd api
+          npm ci
+          npm run build
+
+      - if: ${{ steps.cache-api.outputs.cache-hit != 'true' }}
+        name: Deploy lambda main
+        run: |
+          zip -j lambda-main.zip api/lambdas/build/**/*.js
+          aws lambda update-function-code --function-name ${{vars.LAMBDA_MAIN_ARN}} --zip-file fileb://lambda-main.zip
+
+
+
 
 
 

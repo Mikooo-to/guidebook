@@ -71,9 +71,9 @@ jobs:
         run: echo 'No api changes found. Skip api build and deployment.'
 
       - if: ${{ steps.cache-api.outputs.cache-hit != 'true' }}
-        name: Build
+        name: Build lambdas
         run: |
-          cd api
+          cd api/lambdas
           npm ci
           npm run build
 

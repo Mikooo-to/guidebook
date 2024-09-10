@@ -48,6 +48,7 @@ set secrets
 and variables
 `AWS_REGION`
 `AWS_S3_BUCKET_NAME` - bucket name to deploy frontend. Must be the same as 'frontendBucketName' in infra/cdk/lib/const.ts 
+`LAMBDA_MAIN_ARN` - arn of the main lambda function.
 
 Now you can deploy by merging to github master leveraging github actions workflows
 

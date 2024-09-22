@@ -6,6 +6,9 @@ import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as rds from 'aws-cdk-lib/aws-rds';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
+import * as route53 from 'aws-cdk-lib/aws-route53';
+import * as targets from 'aws-cdk-lib/aws-route53-targets';
+
 import { Construct } from 'constructs';
 
 const projectName = 'guidebook';
@@ -15,6 +18,7 @@ const lambdasPath = `../../api/lambdas/build`;
 const handlers = {
   main: 'main.mainHandler',
 };
+const subDomainName = 'ukr.lublin.life';
 
 export class MyStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -25,9 +29,14 @@ export class MyStack extends cdk.Stack {
       userName: userDeploerName,
     });
 
+    /**
+     *  FRONTEND
+     */
+
     // Bucket for storing frontend code
     const bucketForFrontend = new s3.Bucket(this, frontendBucketName, {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
+      bucketName: subDomainName,
       autoDeleteObjects: true,
       blockPublicAccess: {
         blockPublicAcls: false,
@@ -48,6 +57,26 @@ export class MyStack extends cdk.Stack {
         resources: [`arn:aws:s3:::${bucketForFrontend.bucketName}/*`],
       }),
     );
+
+    //Lookup the zone based on domain name
+    const zone = route53.HostedZone.fromLookup(this, 'lublinlifeZone', {
+      domainName: 'lublin.life',
+    });
+
+    //Add the Subdomain to Route53
+    const cName = new route53.ARecord(this, 'ukrLublinlifeSubdomain', {
+      zone: zone,
+      recordName: subDomainName,
+      target: route53.RecordTarget.fromAlias(
+        new targets.BucketWebsiteTarget(bucketForFrontend),
+      ),
+
+      // domainName: bucketForFrontend.bucketWebsiteDomainName,
+    });
+
+    /**
+     *  BACKEND
+     */
 
     // Lambda functions
     const lambdaCommonRole = new iam.Role(this, `${projectName}-lambdarole`, {
@@ -92,12 +121,24 @@ export class MyStack extends cdk.Stack {
       handler: handlers.main,
       role: lambdaCommonRole,
       environment: {
-        DB_USERNAME: secrets.secretValueFromJson('username').toString(),
-        DB_PASSWORD: secrets.secretValueFromJson('password').toString(),
-        DB_HOST: secrets.secretValueFromJson('host').toString(),
-        DB_PORT: secrets.secretValueFromJson('port').toString(),
-        DB_DATABASE: secrets.secretValueFromJson('dbname').toString(),
-        DB_ENGINE: secrets.secretValueFromJson('engine').toString(),
+        DB_USERNAME: secrets
+          .secretValueFromJson('username')
+          .unsafeUnwrap()
+          .toString(),
+        DB_PASSWORD: secrets
+          .secretValueFromJson('password')
+          .unsafeUnwrap()
+          .toString(),
+        DB_HOST: secrets.secretValueFromJson('host').unsafeUnwrap().toString(),
+        DB_PORT: secrets.secretValueFromJson('port').unsafeUnwrap().toString(),
+        DB_DATABASE: secrets
+          .secretValueFromJson('dbname')
+          .unsafeUnwrap()
+          .toString(),
+        DB_ENGINE: secrets
+          .secretValueFromJson('engine')
+          .unsafeUnwrap()
+          .toString(),
       },
     });
 
@@ -162,11 +203,6 @@ export class MyStack extends cdk.Stack {
       ec2.Port.tcp(5432), // allow inbound traffic on port 5432 (postgres)
       'allow inbound traffic from anywhere to the db on port 5432',
     );
-    // ------------------
-    //   ---------------
-    // aws rds describe-db-engine-versions | jq '.DBEngineVersions[] | select(.SupportedEngineModes != null and .SupportedEngineModes[] == "serverless" and .Engine == "aurora-postgresql")'
-    // -------------
-    // -------------
 
     const dbCluster = new rds.ServerlessCluster(this, 'Database', {
       engine: rds.DatabaseClusterEngine.auroraPostgres({

@@ -2,7 +2,6 @@ import * as cdk from 'aws-cdk-lib';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
-import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as rds from 'aws-cdk-lib/aws-rds';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
@@ -77,6 +76,15 @@ export class MyStack extends cdk.Stack {
       ),
     );
 
+    const secrets = secretsmanager.Secret.fromSecretAttributes(
+      this,
+      'GuidebookSecrets',
+      {
+        secretCompleteArn:
+          'arn:aws:secretsmanager:eu-central-1:652460108554:secret:GuidebookStackDatabaseSecre-Vu6XMIWgXDtz-sTA8Pp',
+      },
+    );
+
     // Lambda functions - main
     const lambdaFnMain = new lambda.Function(this, `lambdaFnMain`, {
       code: lambda.AssetCode.fromAsset(lambdasPath),
@@ -84,8 +92,12 @@ export class MyStack extends cdk.Stack {
       handler: handlers.main,
       role: lambdaCommonRole,
       environment: {
-        DB_USERNAME: 'mocked', // todo
-        DB_PASSWORD: 'mocked', // todo
+        DB_USERNAME: secrets.secretValueFromJson('username').toString(),
+        DB_PASSWORD: secrets.secretValueFromJson('password').toString(),
+        DB_HOST: secrets.secretValueFromJson('host').toString(),
+        DB_PORT: secrets.secretValueFromJson('port').toString(),
+        DB_DATABASE: secrets.secretValueFromJson('dbname').toString(),
+        DB_ENGINE: secrets.secretValueFromJson('engine').toString(),
       },
     });
 
@@ -136,42 +148,6 @@ export class MyStack extends cdk.Stack {
     const vpc = ec2.Vpc.fromLookup(this, 'VPC', {
       isDefault: true,
     });
-
-    // // Create a new public subnet
-    // const publicSubnet = new ec2.PublicSubnet(this, 'MyPublicSubnet', {
-    //   vpcId: vpc.vpcId,
-    //   availabilityZone: `${this.region}a`, // e.g., 'eu-central-1a'
-    //   cidrBlock: '172.31.48.0/20', // Make sure this doesn't overlap with existing subnets
-    // });
-
-    // // Create an Internet Gateway if it doesn't exist
-    // const igw = new ec2.CfnInternetGateway(this, 'MyInternetGateway');
-    // new ec2.CfnVPCGatewayAttachment(this, 'MyVPCGatewayAttachment', {
-    //   vpcId: vpc.vpcId,
-    //   internetGatewayId: igw.ref,
-    // });
-
-    // // Create a route table for the public subnet
-    // const publicRouteTable = new ec2.CfnRouteTable(this, 'MyPublicRouteTable', {
-    //   vpcId: vpc.vpcId,
-    // });
-
-    // // Associate the route table with the public subnet
-    // new ec2.CfnSubnetRouteTableAssociation(
-    //   this,
-    //   'MySubnetRouteTableAssociation',
-    //   {
-    //     routeTableId: publicRouteTable.ref,
-    //     subnetId: publicSubnet.subnetId,
-    //   },
-    // );
-
-    // // Add a route to the Internet Gateway
-    // new ec2.CfnRoute(this, 'MyPublicRoute', {
-    //   routeTableId: publicRouteTable.ref,
-    //   destinationCidrBlock: '0.0.0.0/0',
-    //   gatewayId: igw.ref,
-    // });
 
     // Create a security group for the database
     const dbSecurityGroup = new ec2.SecurityGroup(this, 'DbSecurityGroup', {

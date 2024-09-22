@@ -142,7 +142,7 @@ export class MyStack extends cdk.Stack {
       },
     });
 
-    const api = new apigateway.LambdaRestApi(this, 'articles-api', {
+    const api = new apigateway.LambdaRestApi(this, 'guidebook-main-api', {
       handler: lambdaFnMain,
       proxy: true,
       defaultCorsPreflightOptions: {

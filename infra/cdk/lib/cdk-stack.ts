@@ -50,39 +50,6 @@ export class MyStack extends cdk.Stack {
       }),
     );
 
-    const table = new dynamodb.Table(this, 'articles-table', {
-      partitionKey: {
-        name: 'partitionId',
-        type: dynamodb.AttributeType.STRING,
-      },
-      sortKey: {
-        name: 'id',
-        type: dynamodb.AttributeType.STRING,
-      },
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      readCapacity: 1,
-      writeCapacity: 1,
-    });
-    const readScaling = table.autoScaleReadCapacity({
-      minCapacity: 1,
-      maxCapacity: 2,
-    });
-    readScaling.scaleOnUtilization({ targetUtilizationPercent: 75 });
-    const writeScaling = table.autoScaleWriteCapacity({
-      minCapacity: 1,
-      maxCapacity: 2,
-    });
-    writeScaling.scaleOnUtilization({ targetUtilizationPercent: 75 });
-
-    table.addLocalSecondaryIndex({
-      indexName: 'user',
-      sortKey: { name: 'user', type: dynamodb.AttributeType.STRING },
-    });
-    table.addLocalSecondaryIndex({
-      indexName: 'section',
-      sortKey: { name: 'section', type: dynamodb.AttributeType.STRING },
-    });
-
     // Lambda functions
     const lambdaCommonRole = new iam.Role(this, `${projectName}-lambdarole`, {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
@@ -117,11 +84,10 @@ export class MyStack extends cdk.Stack {
       handler: handlers.main,
       role: lambdaCommonRole,
       environment: {
-        TABLE: table.tableName,
+        DB_USERNAME: 'mocked', // todo
+        DB_PASSWORD: 'mocked', // todo
       },
     });
-
-    table.grantFullAccess(lambdaFnMain);
 
     const api = new apigateway.LambdaRestApi(this, 'articles-api', {
       handler: lambdaFnMain,
@@ -163,7 +129,6 @@ export class MyStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'lambdaFnMain Arn', {
       value: lambdaFnMain.functionArn,
     });
-    new cdk.CfnOutput(this, 'table', { value: table.tableName });
 
     // =========================================
     // =========================================

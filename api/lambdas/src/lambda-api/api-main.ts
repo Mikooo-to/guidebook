@@ -1,8 +1,8 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-export const mainHandler = async (
+export const apiMainHandler = async (
   event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
-  console.log('[mainHandler params]', event.body);
+  console.log('[apiMainHandler params]', event.body);
   console.log('[event.path]', event.path);
   console.log('[event.pathParameters]', event.pathParameters);
   return {

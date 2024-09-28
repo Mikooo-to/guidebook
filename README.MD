@@ -63,3 +63,10 @@ aws configure --profile guidebook
 ```shell
 ./infra/cloudformation/deploy-runner.sh update <cloud-formation-stack-name>
 ``` -->
+
+
+# USEFUL INFO
+## get the list of  availabe aurora serverless DB engines
+```sh
+aws rds describe-db-engine-versions | jq '.DBEngineVersions[] | select(.SupportedEngineModes != null and .SupportedEngineModes[] == "serverless" and .Engine == "aurora-postgresql")'
+```

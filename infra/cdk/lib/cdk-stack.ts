@@ -2,11 +2,13 @@ import * as cdk from 'aws-cdk-lib';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
-import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as rds from 'aws-cdk-lib/aws-rds';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
+import * as route53 from 'aws-cdk-lib/aws-route53';
+import * as targets from 'aws-cdk-lib/aws-route53-targets';
+
 import { Construct } from 'constructs';
 
 const projectName = 'guidebook';
@@ -16,6 +18,7 @@ const lambdasPath = `../../api/lambdas/build`;
 const handlers = {
   main: 'main.mainHandler',
 };
+const subDomainName = 'ukr.lublin.life';
 
 export class MyStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -26,9 +29,14 @@ export class MyStack extends cdk.Stack {
       userName: userDeploerName,
     });
 
+    /**
+     *  FRONTEND
+     */
+
     // Bucket for storing frontend code
     const bucketForFrontend = new s3.Bucket(this, frontendBucketName, {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
+      bucketName: subDomainName,
       autoDeleteObjects: true,
       blockPublicAccess: {
         blockPublicAcls: false,
@@ -50,38 +58,25 @@ export class MyStack extends cdk.Stack {
       }),
     );
 
-    const table = new dynamodb.Table(this, 'articles-table', {
-      partitionKey: {
-        name: 'partitionId',
-        type: dynamodb.AttributeType.STRING,
-      },
-      sortKey: {
-        name: 'id',
-        type: dynamodb.AttributeType.STRING,
-      },
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      readCapacity: 1,
-      writeCapacity: 1,
+    //Lookup the zone based on domain name
+    const zone = route53.HostedZone.fromLookup(this, 'lublinlifeZone', {
+      domainName: 'lublin.life',
     });
-    const readScaling = table.autoScaleReadCapacity({
-      minCapacity: 1,
-      maxCapacity: 2,
-    });
-    readScaling.scaleOnUtilization({ targetUtilizationPercent: 75 });
-    const writeScaling = table.autoScaleWriteCapacity({
-      minCapacity: 1,
-      maxCapacity: 2,
-    });
-    writeScaling.scaleOnUtilization({ targetUtilizationPercent: 75 });
 
-    table.addLocalSecondaryIndex({
-      indexName: 'user',
-      sortKey: { name: 'user', type: dynamodb.AttributeType.STRING },
+    //Add the Subdomain to Route53
+    const cName = new route53.ARecord(this, 'ukrLublinlifeSubdomain', {
+      zone: zone,
+      recordName: subDomainName,
+      target: route53.RecordTarget.fromAlias(
+        new targets.BucketWebsiteTarget(bucketForFrontend),
+      ),
+
+      // domainName: bucketForFrontend.bucketWebsiteDomainName,
     });
-    table.addLocalSecondaryIndex({
-      indexName: 'section',
-      sortKey: { name: 'section', type: dynamodb.AttributeType.STRING },
-    });
+
+    /**
+     *  BACKEND
+     */
 
     // Lambda functions
     const lambdaCommonRole = new iam.Role(this, `${projectName}-lambdarole`, {
@@ -110,6 +105,15 @@ export class MyStack extends cdk.Stack {
       ),
     );
 
+    const secrets = secretsmanager.Secret.fromSecretAttributes(
+      this,
+      'GuidebookSecrets',
+      {
+        secretCompleteArn:
+          'arn:aws:secretsmanager:eu-central-1:652460108554:secret:GuidebookStackDatabaseSecre-Vu6XMIWgXDtz-sTA8Pp',
+      },
+    );
+
     // Lambda functions - main
     const lambdaFnMain = new lambda.Function(this, `lambdaFnMain`, {
       code: lambda.AssetCode.fromAsset(lambdasPath),
@@ -117,13 +121,28 @@ export class MyStack extends cdk.Stack {
       handler: handlers.main,
       role: lambdaCommonRole,
       environment: {
-        TABLE: table.tableName,
+        DB_USERNAME: secrets
+          .secretValueFromJson('username')
+          .unsafeUnwrap()
+          .toString(),
+        DB_PASSWORD: secrets
+          .secretValueFromJson('password')
+          .unsafeUnwrap()
+          .toString(),
+        DB_HOST: secrets.secretValueFromJson('host').unsafeUnwrap().toString(),
+        DB_PORT: secrets.secretValueFromJson('port').unsafeUnwrap().toString(),
+        DB_DATABASE: secrets
+          .secretValueFromJson('dbname')
+          .unsafeUnwrap()
+          .toString(),
+        DB_ENGINE: secrets
+          .secretValueFromJson('engine')
+          .unsafeUnwrap()
+          .toString(),
       },
     });
 
-    table.grantFullAccess(lambdaFnMain);
-
-    const api = new apigateway.LambdaRestApi(this, 'articles-api', {
+    const api = new apigateway.LambdaRestApi(this, 'guidebook-main-api', {
       handler: lambdaFnMain,
       proxy: true,
       defaultCorsPreflightOptions: {
@@ -163,7 +182,6 @@ export class MyStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'lambdaFnMain Arn', {
       value: lambdaFnMain.functionArn,
     });
-    new cdk.CfnOutput(this, 'table', { value: table.tableName });
 
     // =========================================
     // =========================================
@@ -171,42 +189,6 @@ export class MyStack extends cdk.Stack {
     const vpc = ec2.Vpc.fromLookup(this, 'VPC', {
       isDefault: true,
     });
-
-    // // Create a new public subnet
-    // const publicSubnet = new ec2.PublicSubnet(this, 'MyPublicSubnet', {
-    //   vpcId: vpc.vpcId,
-    //   availabilityZone: `${this.region}a`, // e.g., 'eu-central-1a'
-    //   cidrBlock: '172.31.48.0/20', // Make sure this doesn't overlap with existing subnets
-    // });
-
-    // // Create an Internet Gateway if it doesn't exist
-    // const igw = new ec2.CfnInternetGateway(this, 'MyInternetGateway');
-    // new ec2.CfnVPCGatewayAttachment(this, 'MyVPCGatewayAttachment', {
-    //   vpcId: vpc.vpcId,
-    //   internetGatewayId: igw.ref,
-    // });
-
-    // // Create a route table for the public subnet
-    // const publicRouteTable = new ec2.CfnRouteTable(this, 'MyPublicRouteTable', {
-    //   vpcId: vpc.vpcId,
-    // });
-
-    // // Associate the route table with the public subnet
-    // new ec2.CfnSubnetRouteTableAssociation(
-    //   this,
-    //   'MySubnetRouteTableAssociation',
-    //   {
-    //     routeTableId: publicRouteTable.ref,
-    //     subnetId: publicSubnet.subnetId,
-    //   },
-    // );
-
-    // // Add a route to the Internet Gateway
-    // new ec2.CfnRoute(this, 'MyPublicRoute', {
-    //   routeTableId: publicRouteTable.ref,
-    //   destinationCidrBlock: '0.0.0.0/0',
-    //   gatewayId: igw.ref,
-    // });
 
     // Create a security group for the database
     const dbSecurityGroup = new ec2.SecurityGroup(this, 'DbSecurityGroup', {
@@ -221,11 +203,6 @@ export class MyStack extends cdk.Stack {
       ec2.Port.tcp(5432), // allow inbound traffic on port 5432 (postgres)
       'allow inbound traffic from anywhere to the db on port 5432',
     );
-    // ------------------
-    //   ---------------
-    // aws rds describe-db-engine-versions | jq '.DBEngineVersions[] | select(.SupportedEngineModes != null and .SupportedEngineModes[] == "serverless" and .Engine == "aurora-postgresql")'
-    // -------------
-    // -------------
 
     const dbCluster = new rds.ServerlessCluster(this, 'Database', {
       engine: rds.DatabaseClusterEngine.auroraPostgres({

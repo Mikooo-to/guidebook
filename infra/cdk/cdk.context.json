@@ -30,5 +30,9 @@
         ]
       }
     ]
+  },
+  "hosted-zone:account=652460108554:domainName=lublin.life:region=eu-central-1": {
+    "Id": "/hostedzone/Z08867751UYWG1ZX3MXLG",
+    "Name": "lublin.life."
   }
 }

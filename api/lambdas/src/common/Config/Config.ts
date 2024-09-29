@@ -1,10 +1,9 @@
 export type TConstants = {
-  ADMIN_PASSWORD: string;
-  DB_USER: string;
-  DB_HOST: string;
-  DB_DATABASE: string;
-  DB_PASSWORD: string;
-  DB_PORT: number;
+  DB_USER: string | undefined;
+  DB_HOST: string | undefined;
+  DB_DATABASE: string | undefined;
+  DB_PASSWORD: string | undefined;
+  DB_PORT: number | undefined;
 };
 
 export class Config {

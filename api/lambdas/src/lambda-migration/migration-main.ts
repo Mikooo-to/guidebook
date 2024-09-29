@@ -1,19 +1,17 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { Logger } from './Logger/Logger';
+import { Logger } from './Logger/Logger.js';
 import { Config } from '../common/Config/Config';
 import { DatabaseVersionControl } from './Dbvc/database-version-control';
 import { Postgres } from '../common/Postgres/postgres';
-import { getSecret } from '../common/Tools/Tools';
 
-const logger = new Logger();
 const config = new Config({
-  ADMIN_PASSWORD: await getSecret('ADMIN_PASSWORD'),
-  DB_DATABASE: 'test',
-  DB_HOST: 'test',
-  DB_PASSWORD: 'test',
-  DB_USER: 'test',
-  DB_PORT: 5432,
+  DB_DATABASE: process.env['DB_DATABASE'],
+  DB_HOST: process.env['DB_HOST'],
+  DB_PASSWORD: process.env['DB_PASSWORD'],
+  DB_USER: process.env['DB_USER'],
+  DB_PORT: Number(process.env['DB_PORT']),
 });
+const logger = new Logger();
 const pg = new Postgres(config);
 const dbvc = new DatabaseVersionControl(pg, logger);
 

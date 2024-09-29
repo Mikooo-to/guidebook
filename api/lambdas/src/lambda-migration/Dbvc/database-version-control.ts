@@ -71,7 +71,7 @@ export class DatabaseVersionControl {
 
   private async loadVersion1(): Promise<void> {
     // schema
-    await this.runSqlFile('./migration/v1/v1.schema.sql');
+    await this.runSqlFile('./v1.schema.sql');
 
     // update db version
     await this.setVersionNumber(1);

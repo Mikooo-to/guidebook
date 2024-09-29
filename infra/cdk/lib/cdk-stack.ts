@@ -10,15 +10,13 @@ import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as targets from 'aws-cdk-lib/aws-route53-targets';
 
 import { Construct } from 'constructs';
-
-const projectName = 'guidebook';
-const frontendBucketName = `${projectName}-frontend`;
-const userDeploerName = `${projectName}-deployer`;
-const lambdasPath = `../../api/lambdas/build`;
-const handlers = {
-  main: 'main.mainHandler',
-};
-const subDomainName = 'ukr.lublin.life';
+import {
+  frontendBucketName,
+  LAMBDAS,
+  projectName,
+  subDomainName,
+  userDeploerName,
+} from './const';
 
 export class MyStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -114,14 +112,60 @@ export class MyStack extends cdk.Stack {
       },
     );
 
-    // Lambda functions - main
-    const lambdaFnMain = new lambda.Function(this, `lambdaFnMain`, {
-      code: lambda.AssetCode.fromAsset(lambdasPath),
+    // Lamba functions - common layers
+
+    // Create a layer for node_modules
+    const nodeModulesLayer = new lambda.LayerVersion(this, 'NodeModulesLayer', {
+      code: lambda.Code.fromAsset(LAMBDAS.layerNodeModules.path), // Adjust this path as needed
+      compatibleRuntimes: [lambda.Runtime.NODEJS_20_X], // Adjust for your Node.js version
+      description: 'Node modules layer',
+    });
+
+    // Create a layer for build/common
+    const commonLayer = new lambda.LayerVersion(this, 'CommonLayer', {
+      code: lambda.Code.fromAsset(LAMBDAS.layerCommon.path), // Adjust this path as needed
+      compatibleRuntimes: [lambda.Runtime.NODEJS_20_X], // Adjust for your Node.js version
+      description: 'Common code layer',
+    });
+
+    // Lambda functions - migration
+    const lambdaFnMigration = new lambda.Function(this, `lambdaFnMigration`, {
+      code: lambda.AssetCode.fromAsset(LAMBDAS.migration.path),
+      layers: [nodeModulesLayer, commonLayer],
       runtime: lambda.Runtime.NODEJS_20_X,
-      handler: handlers.main,
+      handler: LAMBDAS.migration.handler,
       role: lambdaCommonRole,
       environment: {
-        DB_USERNAME: secrets
+        DB_USER: secrets
+          .secretValueFromJson('username')
+          .unsafeUnwrap()
+          .toString(),
+        DB_PASSWORD: secrets
+          .secretValueFromJson('password')
+          .unsafeUnwrap()
+          .toString(),
+        DB_HOST: secrets.secretValueFromJson('host').unsafeUnwrap().toString(),
+        DB_PORT: secrets.secretValueFromJson('port').unsafeUnwrap().toString(),
+        DB_DATABASE: secrets
+          .secretValueFromJson('dbname')
+          .unsafeUnwrap()
+          .toString(),
+        DB_ENGINE: secrets
+          .secretValueFromJson('engine')
+          .unsafeUnwrap()
+          .toString(),
+      },
+    });
+
+    // Lambda functions - main api
+    const lambdaFnApi = new lambda.Function(this, `lambdaFnApi`, {
+      code: lambda.AssetCode.fromAsset(LAMBDAS.api.path),
+      layers: [nodeModulesLayer, commonLayer],
+      runtime: lambda.Runtime.NODEJS_20_X,
+      handler: LAMBDAS.api.handler,
+      role: lambdaCommonRole,
+      environment: {
+        DB_USER: secrets
           .secretValueFromJson('username')
           .unsafeUnwrap()
           .toString(),
@@ -143,7 +187,7 @@ export class MyStack extends cdk.Stack {
     });
 
     const api = new apigateway.LambdaRestApi(this, 'guidebook-main-api', {
-      handler: lambdaFnMain,
+      handler: lambdaFnApi,
       proxy: true,
       defaultCorsPreflightOptions: {
         allowOrigins: apigateway.Cors.ALL_ORIGINS,
@@ -167,7 +211,7 @@ export class MyStack extends cdk.Stack {
           new iam.PolicyStatement({
             actions: ['lambda:UpdateFunctionCode'],
             effect: iam.Effect.ALLOW,
-            resources: [lambdaFnMain.functionArn],
+            resources: [lambdaFnApi.functionArn],
           }),
         ],
       }),
@@ -179,8 +223,11 @@ export class MyStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'Bucket Name For Frontend', {
       value: bucketForFrontend.bucketName,
     });
-    new cdk.CfnOutput(this, 'lambdaFnMain Arn', {
-      value: lambdaFnMain.functionArn,
+    new cdk.CfnOutput(this, 'lambdaFnApi Arn', {
+      value: lambdaFnApi.functionArn,
+    });
+    new cdk.CfnOutput(this, 'lambdaFnMigration Arn', {
+      value: lambdaFnMigration.functionArn,
     });
 
     // =========================================

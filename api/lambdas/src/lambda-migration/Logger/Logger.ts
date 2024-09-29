@@ -23,9 +23,9 @@ export class Logger {
   }
 
   // PRIVATE
-  private addToErrorLogs(log: string): void {
+  private addToErrorLogs(logString: string): void {
     this.errorLogs =
       this.errorLogs +
-      `\n ${new Date().toISOString} [${this.config.prefix}] ${log}`;
+      `\n- ${new Date().toISOString()} [${this.config.prefix}] ${logString}`;
   }
 }

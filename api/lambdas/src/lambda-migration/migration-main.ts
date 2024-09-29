@@ -27,7 +27,7 @@ export const migrationHandler = async (
 ): Promise<APIGatewayProxyResult> => {
   console.log('[migrationHandler event:]', event);
   await connectionPromise;
-  console.dir('[client connected:]', client);
+  console.log('[client connected:]', client);
   const dbvc = new DatabaseVersionControl(client, logger);
   try {
     await dbvc.init();

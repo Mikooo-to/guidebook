@@ -1,6 +1,7 @@
 import { readFileSync } from 'fs';
 import { Logger } from '../Logger/Logger';
 import { Client } from 'pg';
+import path = require('path');
 
 export class DatabaseVersionControl {
   constructor(private client: Client, private logger: Logger) {
@@ -72,7 +73,7 @@ export class DatabaseVersionControl {
 
   private async loadVersion1(): Promise<void> {
     // schema
-    await this.runSqlFile('./v1.schema.sql');
+    await this.runSqlFile(path.join(__dirname, 'v1.schema.sql'));
 
     // update db version
     await this.setVersionNumber(1);

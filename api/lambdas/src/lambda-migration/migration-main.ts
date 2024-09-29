@@ -1,8 +1,8 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { Logger } from './Logger/Logger.js';
-import { Config } from '../common/Config/Config';
+import { APIGatewayProxyResult } from 'aws-lambda';
 import { DatabaseVersionControl } from './Dbvc/database-version-control';
-import { Postgres } from '../common/Postgres/postgres';
+import { Config } from './Config/Config';
+import { Logger } from './Logger/Logger';
+import { Postgres } from './Postgres/postgres';
 
 const config = new Config({
   DB_DATABASE: process.env['DB_DATABASE'],
@@ -11,7 +11,7 @@ const config = new Config({
   DB_USER: process.env['DB_USER'],
   DB_PORT: Number(process.env['DB_PORT']),
 });
-const logger = new Logger();
+const logger = new Logger({ prefix: 'Migration' });
 const pg = new Postgres(config);
 const dbvc = new DatabaseVersionControl(pg, logger);
 

@@ -121,17 +121,10 @@ export class MyStack extends cdk.Stack {
       description: 'Node modules layer',
     });
 
-    // Create a layer for build/common
-    const commonLayer = new lambda.LayerVersion(this, 'CommonLayer', {
-      code: lambda.Code.fromAsset(LAMBDAS.layerCommon.path), // Adjust this path as needed
-      compatibleRuntimes: [lambda.Runtime.NODEJS_20_X], // Adjust for your Node.js version
-      description: 'Common code layer',
-    });
-
     // Lambda functions - migration
     const lambdaFnMigration = new lambda.Function(this, `lambdaFnMigration`, {
       code: lambda.AssetCode.fromAsset(LAMBDAS.migration.path),
-      layers: [nodeModulesLayer, commonLayer],
+      layers: [nodeModulesLayer],
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: LAMBDAS.migration.handler,
       role: lambdaCommonRole,
@@ -160,7 +153,7 @@ export class MyStack extends cdk.Stack {
     // Lambda functions - main api
     const lambdaFnApi = new lambda.Function(this, `lambdaFnApi`, {
       code: lambda.AssetCode.fromAsset(LAMBDAS.api.path),
-      layers: [nodeModulesLayer, commonLayer],
+      layers: [nodeModulesLayer],
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: LAMBDAS.api.handler,
       role: lambdaCommonRole,

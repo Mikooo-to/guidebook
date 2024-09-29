@@ -1,11 +1,9 @@
 {
   "name": "guidebook-api",
   "version": "0.1.0",
-  "type": "module",
   "scripts": {
     "copy-sql": "copyfiles -u 1 src/**/*.sql build",
-    "copy-json": "cp *.json build/lambda-migration/ && cp *.json build/lambda-api/",
-    "build": "tsc && npm run copy-sql && npm run copy-json",
+    "build": "tsc && npm run copy-sql",
     "watch": "tsc -w",
     "test": "jest"
   },

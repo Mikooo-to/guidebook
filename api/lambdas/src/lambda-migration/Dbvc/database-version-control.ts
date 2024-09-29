@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
-import { Postgres } from '../../common/Postgres/postgres';
 import { Logger } from '../Logger/Logger';
+import { Postgres } from '../Postgres/postgres';
 
 export class DatabaseVersionControl {
   constructor(private pg: Postgres, private logger: Logger) {

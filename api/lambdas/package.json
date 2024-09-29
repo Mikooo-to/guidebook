@@ -2,6 +2,7 @@
   "name": "guidebook-api",
   "version": "0.1.0",
   "scripts": {
+    "layer": "mkdir -p build_lambda_layer/nodejs/node20 && ln -sf ../../../node_modules build_lambda_layer/nodejs/node20/ && cd build_lambda_layer && zip -r layer.zip nodejs -x \"*/.*\" && cd ..",
     "copy-sql": "copyfiles -u 1 src/**/*.sql build",
     "build": "tsc && npm run copy-sql",
     "watch": "tsc -w",

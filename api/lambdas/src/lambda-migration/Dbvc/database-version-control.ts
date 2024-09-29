@@ -1,9 +1,9 @@
 import { readFileSync } from 'fs';
 import { Logger } from '../Logger/Logger';
-import { Postgres } from '../Postgres/postgres';
+import { Pool } from 'pg';
 
 export class DatabaseVersionControl {
-  constructor(private pg: Postgres, private logger: Logger) {
+  constructor(private pgPool: Pool, private logger: Logger) {
     logger.log(
       'Database Version Control. Use .init() to migrate DB to version mentioned in the first row of the table database_version_control.version',
     );
@@ -37,7 +37,7 @@ export class DatabaseVersionControl {
   }
 
   private async getIsDbInit(): Promise<boolean> {
-    const res = await this.pg.pool.query(
+    const res = await this.pgPool.query(
       `
       SELECT EXISTS (
       SELECT FROM information_schema.tables 
@@ -50,7 +50,7 @@ export class DatabaseVersionControl {
   }
 
   private async getSchemaVersion(): Promise<number> {
-    const res = await this.pg.pool.query(
+    const res = await this.pgPool.query(
       `
       select version 
       from database_version_control 
@@ -88,7 +88,7 @@ export class DatabaseVersionControl {
   }
 
   private async setVersionNumber(version: number): Promise<void> {
-    await this.pg.pool.query(
+    await this.pgPool.query(
       `
       insert into database_version_control(version) values($1);
     `,
@@ -101,7 +101,7 @@ export class DatabaseVersionControl {
       this.logger.log('loading SQL: ' + path);
       const data = readFileSync(path, 'utf8');
 
-      await this.pg.pool.query(data, []);
+      await this.pgPool.query(data, []);
     } catch (err) {
       this.logger.error(err);
     }

@@ -6,7 +6,7 @@ export const userDeploerName = `${projectName}-deployer`;
 export const subDomainName = 'ukr.lublin.life';
 
 export const LAMBDAS: Record<
-  'api' | 'migration' | 'layerNodeModules' | 'layerCommon',
+  'api' | 'migration' | 'layerNodeModules',
   { path: string; handler: string }
 > = {
   api: {
@@ -18,11 +18,7 @@ export const LAMBDAS: Record<
     handler: 'migration-main.migrationHandler',
   },
   layerNodeModules: {
-    path: '../../api/lambdas/node_modules',
-    handler: '',
-  },
-  layerCommon: {
-    path: '../../api/lambdas/build/common',
+    path: '../../api/lambdas/build_lambda_layer/layer.zip',
     handler: '',
   },
 };

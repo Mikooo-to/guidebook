@@ -2,7 +2,7 @@ import { APIGatewayProxyResult } from 'aws-lambda';
 import { DatabaseVersionControl } from './Dbvc/database-version-control';
 import { Config } from './Config/Config';
 import { Logger } from './Logger/Logger';
-import { Postgres } from './Postgres/postgres';
+import { Pool } from 'pg';
 
 const config = new Config({
   DB_DATABASE: process.env['DB_DATABASE'],
@@ -12,15 +12,22 @@ const config = new Config({
   DB_PORT: Number(process.env['DB_PORT']),
 });
 const logger = new Logger({ prefix: 'Migration' });
-const pg = new Postgres(config);
-const dbvc = new DatabaseVersionControl(pg, logger);
+const pgPool = new Pool({
+  user: config.constants.DB_USER,
+  host: config.constants.DB_HOST,
+  database: config.constants.DB_DATABASE,
+  password: config.constants.DB_PASSWORD,
+  port: config.constants.DB_PORT,
+});
+
+const dbvc = new DatabaseVersionControl(pgPool, logger);
 
 export const migrationHandler = async (
   event: any,
 ): Promise<APIGatewayProxyResult> => {
-  console.log('[migrationHandler event]', event);
+  console.log('[migrationHandler event:]', event);
   try {
-    dbvc.init();
+    await dbvc.init();
     console.log('no errors');
     return {
       statusCode: 200,

@@ -127,6 +127,7 @@ export class MyStack extends cdk.Stack {
       layers: [nodeModulesLayer],
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: LAMBDAS.migration.handler,
+      timeout: cdk.Duration.seconds(30),
       role: lambdaCommonRole,
       environment: {
         DB_USER: secrets

@@ -76,6 +76,25 @@ export class MyStack extends cdk.Stack {
      *  BACKEND
      */
 
+    // Use the default VPC
+    const vpc = ec2.Vpc.fromLookup(this, 'VPC', {
+      isDefault: true,
+    });
+
+    // Create a security group for the database and assigin it to lambdas to allow access to the db
+    const dbSecurityGroup = new ec2.SecurityGroup(this, 'DbSecurityGroup', {
+      vpc,
+      allowAllOutbound: true,
+      description: 'Security group for Aurora database',
+    });
+
+    // allow inbound traffic from anywhere to the db
+    dbSecurityGroup.addIngressRule(
+      ec2.Peer.anyIpv4(),
+      ec2.Port.tcp(5432), // allow inbound traffic on port 5432 (postgres)
+      'allow inbound traffic from anywhere to the db on port 5432',
+    );
+
     // Lambda functions
     const lambdaCommonRole = new iam.Role(this, `${projectName}-lambdarole`, {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
@@ -102,6 +121,11 @@ export class MyStack extends cdk.Stack {
         'service-role/AWSLambdaVPCAccessExecutionRole',
       ),
     );
+    lambdaCommonRole.addManagedPolicy(
+      iam.ManagedPolicy.fromAwsManagedPolicyName(
+        'service-role/AWSLambdaVPCAccessExecutionRole',
+      ),
+    );
 
     const secrets = secretsmanager.Secret.fromSecretAttributes(
       this,
@@ -111,8 +135,6 @@ export class MyStack extends cdk.Stack {
           'arn:aws:secretsmanager:eu-central-1:652460108554:secret:GuidebookStackDatabaseSecre-Vu6XMIWgXDtz-sTA8Pp',
       },
     );
-
-    // Lamba functions - common layers
 
     // Create a layer for node_modules
     const nodeModulesLayer = new lambda.LayerVersion(this, 'NodeModulesLayer', {
@@ -129,6 +151,10 @@ export class MyStack extends cdk.Stack {
       handler: LAMBDAS.migration.handler,
       timeout: cdk.Duration.seconds(30),
       role: lambdaCommonRole,
+      vpc: vpc, // Add this line to associate the Lambda with the VPC
+      vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC }, // Choose appropriate subnet type
+      allowPublicSubnet: true, //Lambda Functions in a public subnet can NOT access the internet. If you are aware of this limitation and would still like to place the function in a public subnet, set `allowPublicSubnet` to true
+      securityGroups: [dbSecurityGroup], // Add this line to use the same security group as the DB
       environment: {
         DB_USER: secrets
           .secretValueFromJson('username')
@@ -226,24 +252,6 @@ export class MyStack extends cdk.Stack {
 
     // =========================================
     // =========================================
-    // Use the default VPC
-    const vpc = ec2.Vpc.fromLookup(this, 'VPC', {
-      isDefault: true,
-    });
-
-    // Create a security group for the database
-    const dbSecurityGroup = new ec2.SecurityGroup(this, 'DbSecurityGroup', {
-      vpc,
-      allowAllOutbound: true,
-      description: 'Security group for Aurora database',
-    });
-
-    // allow inbound traffic from anywhere to the db
-    dbSecurityGroup.addIngressRule(
-      ec2.Peer.anyIpv4(),
-      ec2.Port.tcp(5432), // allow inbound traffic on port 5432 (postgres)
-      'allow inbound traffic from anywhere to the db on port 5432',
-    );
 
     const dbCluster = new rds.ServerlessCluster(this, 'Database', {
       engine: rds.DatabaseClusterEngine.auroraPostgres({
@@ -262,6 +270,32 @@ export class MyStack extends cdk.Stack {
       defaultDatabaseName: 'guidebook',
       credentials: rds.Credentials.fromGeneratedSecret('postgres'), // This will create the secret automatically
     });
+
+    // allow access from lambda functions to the db cluseter
+    dbCluster.connections.allowFrom(lambdaFnMigration, ec2.Port.tcp(5432));
+    // todo: access from api
+    const dbClusterArn = dbCluster.clusterArn;
+    const dbSecretArn = dbCluster.secret?.secretArn;
+    if (!dbSecretArn) throw new Error(`dbCluster.secret?.secretArn not found`);
+    lambdaCommonRole.addToPolicy(
+      new iam.PolicyStatement({
+        actions: [
+          'rds-data:ExecuteStatement',
+          'rds-data:BatchExecuteStatement',
+          'rds-data:BeginTransaction',
+          'rds-data:CommitTransaction',
+          'rds-data:RollbackTransaction',
+        ],
+        resources: [dbClusterArn],
+      }),
+    );
+
+    lambdaCommonRole.addToPolicy(
+      new iam.PolicyStatement({
+        actions: ['secretsmanager:GetSecretValue'],
+        resources: [dbSecretArn],
+      }),
+    );
 
     new cdk.CfnOutput(this, 'DBEndpoint', {
       value: dbCluster.clusterEndpoint.hostname,

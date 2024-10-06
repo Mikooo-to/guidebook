@@ -149,7 +149,7 @@ export class MyStack extends cdk.Stack {
       layers: [nodeModulesLayer],
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: LAMBDAS.migration.handler,
-      timeout: cdk.Duration.seconds(30),
+      timeout: cdk.Duration.minutes(1),
       role: lambdaCommonRole,
       vpc: vpc, // Add this line to associate the Lambda with the VPC
       vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC }, // Choose appropriate subnet type

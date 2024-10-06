@@ -12,19 +12,19 @@ const config = new Config({
   DB_PORT: Number(process.env['DB_PORT']),
 });
 const logger = new Logger({ prefix: 'Migration' });
-const client = new Client({
-  user: config.constants.DB_USER,
-  host: config.constants.DB_HOST,
-  database: config.constants.DB_DATABASE,
-  password: config.constants.DB_PASSWORD,
-  port: config.constants.DB_PORT,
-});
-
-const connectionPromise = client.connect();
 
 export const migrationHandler = async (
   event: any,
 ): Promise<APIGatewayProxyResult> => {
+  const client = new Client({
+    user: config.constants.DB_USER,
+    host: config.constants.DB_HOST,
+    database: config.constants.DB_DATABASE,
+    password: config.constants.DB_PASSWORD,
+    port: config.constants.DB_PORT,
+  });
+
+  const connectionPromise = client.connect();
   console.log('[migrationHandler event:]', event);
   await connectionPromise;
   console.log('[client connected:]', client);

@@ -24,9 +24,9 @@
       "./node_modules/@types"
     ],
     "outDir": "./build",
-    "baseUrl": "./",
+    "rootDir": "./src",
   },
   "include": [
-    "src"
+    "src/**/*"
   ],
 }

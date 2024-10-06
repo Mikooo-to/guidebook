@@ -1,4 +1,8 @@
 {
+  "hosted-zone:account=652460108554:domainName=lublin.life:region=eu-central-1": {
+    "Id": "/hostedzone/Z08867751UYWG1ZX3MXLG",
+    "Name": "lublin.life."
+  },
   "vpc-provider:account=652460108554:filter.isDefault=true:region=eu-central-1:returnAsymmetricSubnets=true": {
     "vpcId": "vpc-0574bc83c8fa00ff8",
     "vpcCidrBlock": "172.31.0.0/16",
@@ -30,9 +34,5 @@
         ]
       }
     ]
-  },
-  "hosted-zone:account=652460108554:domainName=lublin.life:region=eu-central-1": {
-    "Id": "/hostedzone/Z08867751UYWG1ZX3MXLG",
-    "Name": "lublin.life."
   }
 }

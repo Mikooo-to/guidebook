@@ -2,9 +2,9 @@
   "name": "guidebook-api",
   "version": "0.1.0",
   "scripts": {
-    "layer": "mkdir -p build_lambda_layer/nodejs/node20 && ln -sf ../../../node_modules build_lambda_layer/nodejs/node20/ && cd build_lambda_layer && zip -r layer.zip nodejs -x \"*/.*\" && cd ..",
+    "layer": "rimraf build_lambda_layer && mkdir -p build_lambda_layer/nodejs/node20 && ln -sf ../../../node_modules build_lambda_layer/nodejs/node20/ && cd build_lambda_layer && zip -r layer.zip nodejs -x \"*/.*\" && cd ..",
     "copy-sql": "copyfiles -u 1 src/**/*.sql build",
-    "build": "tsc",
+    "build": "rimraf build && tsc",
     "watch": "tsc -w",
     "test": "jest"
   },
@@ -21,8 +21,10 @@
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.658.1",
+    "@aws-sdk/lib-dynamodb": "^3.665.0",
     "aws-lambda": "^1.0.7",
     "pg": "^8.13.0",
+    "rimraf": "^6.0.1",
     "source-map-support": "^0.5.21"
   }
 }

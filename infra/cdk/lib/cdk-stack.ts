@@ -182,6 +182,9 @@ export class MyStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'lambdaFnApi Arn', {
       value: lambdaFnApi.functionArn,
     });
+    new cdk.CfnOutput(this, 'User deployer Name', {
+      value: userDeploer.userName,
+    });
 
     new cdk.CfnOutput(this, 'table', { value: articlesTable.table.tableName });
   }

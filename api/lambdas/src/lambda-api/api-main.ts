@@ -13,7 +13,7 @@ const client = new DynamoDBClient({});
 const dynamo = DynamoDBDocumentClient.from(client);
 const articlesTableName = process.env.ARTICLES_TABLE_NAME;
 
-export const apiMainHandler = async (
+export const mainHandler = async (
   event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
   console.log('[apiMainHandler params]', event.body);

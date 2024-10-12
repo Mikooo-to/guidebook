@@ -3,7 +3,10 @@ import { Handler } from 'aws-cdk-lib/aws-lambda';
 export const projectName = 'guidebook';
 export const frontendBucketName = `${projectName}-frontend`;
 export const userDeploerName = `${projectName}-deployer`;
-export const subDomainName = 'ukr.lublin.life';
+export const domainName = 'lublin.life';
+export const subDomainNameFrontend = 'ukr.lublin.life';
+export const subDomainNameApi = 'api.ukr.lublin.life';
+export const websiteIndexDocument = 'index.html';
 
 export const LAMBDAS: Record<
   'api' | 'migration' | 'layerNodeModules',

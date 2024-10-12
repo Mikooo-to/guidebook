@@ -6,14 +6,18 @@ import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as targets from 'aws-cdk-lib/aws-route53-targets';
+import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 
 import { Construct } from 'constructs';
 import {
+  domainName,
   frontendBucketName,
   LAMBDAS,
   projectName,
-  subDomainName,
+  subDomainNameApi,
+  subDomainNameFrontend,
   userDeploerName,
+  websiteIndexDocument,
 } from './const';
 import { ArticlesDynamoDbTable } from './db-tables/articles-table';
 
@@ -38,7 +42,7 @@ export class MyStack extends cdk.Stack {
     // Bucket for storing frontend code
     const bucketForFrontend = new s3.Bucket(this, frontendBucketName, {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
-      bucketName: subDomainName,
+      bucketName: subDomainNameFrontend,
       autoDeleteObjects: true,
       blockPublicAccess: {
         blockPublicAcls: false,
@@ -47,7 +51,7 @@ export class MyStack extends cdk.Stack {
         restrictPublicBuckets: false,
       },
       cors: [{ allowedMethods: [s3.HttpMethods.GET], allowedOrigins: ['*'] }],
-      websiteIndexDocument: 'index.html',
+      websiteIndexDocument: websiteIndexDocument,
     });
 
     bucketForFrontend.addToResourcePolicy(
@@ -59,22 +63,6 @@ export class MyStack extends cdk.Stack {
         resources: [`arn:aws:s3:::${bucketForFrontend.bucketName}/*`],
       }),
     );
-
-    //Lookup the zone based on domain name
-    const zone = route53.HostedZone.fromLookup(this, 'lublinlifeZone', {
-      domainName: 'lublin.life',
-    });
-
-    //Add the Subdomain to Route53
-    const cName = new route53.ARecord(this, 'ukrLublinlifeSubdomain', {
-      zone: zone,
-      recordName: subDomainName,
-      target: route53.RecordTarget.fromAlias(
-        new targets.BucketWebsiteTarget(bucketForFrontend),
-      ),
-
-      // domainName: bucketForFrontend.bucketWebsiteDomainName,
-    });
 
     /**
      *  BACKEND
@@ -136,9 +124,11 @@ export class MyStack extends cdk.Stack {
       },
     });
 
+    // Api
     const api = new apigateway.LambdaRestApi(this, 'guidebook-main-api', {
       handler: lambdaFnApi,
       proxy: true,
+      endpointTypes: [apigateway.EndpointType.REGIONAL],
       defaultCorsPreflightOptions: {
         allowOrigins: apigateway.Cors.ALL_ORIGINS,
         allowMethods: apigateway.Cors.ALL_METHODS,
@@ -170,6 +160,54 @@ export class MyStack extends cdk.Stack {
     articlesTable.table.grantFullAccess(lambdaFnApi);
 
     /**
+     *  HOSTING
+     */
+
+    //Lookup the zone based on domain name
+    const zone = route53.HostedZone.fromLookup(this, 'lublinlifeZone', {
+      domainName: domainName,
+    });
+
+    // get sertificate for api
+    const certificate = new acm.Certificate(this, 'ApiCertificate', {
+      domainName: subDomainNameApi,
+      validation: acm.CertificateValidation.fromDns(zone),
+    });
+
+    const apiGatewayDomainName = new apigateway.DomainName(
+      this,
+      'ApiDomainName',
+      {
+        domainName: subDomainNameApi,
+        certificate: certificate,
+        endpointType: apigateway.EndpointType.REGIONAL,
+        securityPolicy: apigateway.SecurityPolicy.TLS_1_2,
+      },
+    );
+    new apigateway.BasePathMapping(this, 'ApiPathMapping', {
+      domainName: apiGatewayDomainName,
+      restApi: api,
+    });
+
+    //Add frontend subdomain to Route53
+    const cNameFront = new route53.ARecord(this, 'ukrLublinlifeSubdomain', {
+      zone: zone,
+      recordName: subDomainNameFrontend,
+      target: route53.RecordTarget.fromAlias(
+        new targets.BucketWebsiteTarget(bucketForFrontend),
+      ),
+    });
+
+    //Add api subdomain to Route53
+    const cNameApi = new route53.ARecord(this, 'apiUkrLublinlifeSubdomain', {
+      zone: zone,
+      recordName: subDomainNameApi,
+      target: route53.RecordTarget.fromAlias(
+        new targets.ApiGatewayDomain(apiGatewayDomainName),
+      ),
+    });
+
+    /**
      *  Output
      */
 
@@ -185,7 +223,6 @@ export class MyStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'User deployer Name', {
       value: userDeploer.userName,
     });
-
     new cdk.CfnOutput(this, 'table', { value: articlesTable.table.tableName });
   }
 }

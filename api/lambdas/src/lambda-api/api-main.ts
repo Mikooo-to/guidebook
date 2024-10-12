@@ -1,4 +1,12 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+// ??  https://www.npmjs.com/package/lambda-api#simple-example
+// ?? https://github.com/typedorm/typedorm
+// https://medium.com/nextfaze/supercharge-%EF%B8%8F-your-dynamodb-single-table-design-pattern-with-typedorm-39168d0d2e29
+
+import {
+  APIGatewayProxyEvent,
+  APIGatewayProxyResult,
+  Context,
+} from 'aws-lambda';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
   DynamoDBDocumentClient,
@@ -7,28 +15,24 @@ import {
   GetCommand,
   DeleteCommand,
 } from '@aws-sdk/lib-dynamodb';
+import createAPI, { Request, Response } from 'lambda-api';
 
 const client = new DynamoDBClient({});
-
 const dynamo = DynamoDBDocumentClient.from(client);
 const articlesTableName = process.env.ARTICLES_TABLE_NAME;
 
-export const mainHandler = async (
-  event: APIGatewayProxyEvent,
-): Promise<APIGatewayProxyResult> => {
-  console.log('[apiMainHandler params]', event.body);
-  console.log('[event.path]', event.path);
-  console.log('[event.pathParameters]', event.pathParameters);
+const api = createAPI();
 
-  const res = await dynamo.send(
+api.get('/articles', async (req: Request, res: Response) => {
+  const articles = await dynamo.send(
     new ScanCommand({ TableName: articlesTableName }),
   );
+  res.status(200).send(articles);
+});
 
-  return {
-    statusCode: 200,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(res.Items),
-  };
+export const mainHandler = async (
+  event: APIGatewayProxyEvent,
+  context: Context,
+): Promise<APIGatewayProxyResult> => {
+  return await api.run(event, context);
 };

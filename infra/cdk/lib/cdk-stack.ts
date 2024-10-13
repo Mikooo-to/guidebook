@@ -20,6 +20,7 @@ import {
   websiteIndexDocument,
 } from './const';
 import { ArticlesDynamoDbTable } from './db-tables/articles-table';
+import { GuidebookDynamoDbTable } from './db-tables/guidebook-table';
 
 export class MyStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -34,6 +35,7 @@ export class MyStack extends cdk.Stack {
      *  Database
      */
     const articlesTable = new ArticlesDynamoDbTable(this);
+    const guidebookTable = new GuidebookDynamoDbTable(this);
 
     /**
      *  FRONTEND
@@ -121,6 +123,7 @@ export class MyStack extends cdk.Stack {
       role: lambdaCommonRole,
       environment: {
         ARTICLES_TABLE_NAME: articlesTable.table.tableName,
+        GUIDEBOOK_TABLE_NAME: guidebookTable.table.tableName,
       },
     });
 
@@ -158,6 +161,7 @@ export class MyStack extends cdk.Stack {
     );
 
     articlesTable.table.grantFullAccess(lambdaFnApi);
+    guidebookTable.table.grantFullAccess(lambdaFnApi);
 
     /**
      *  HOSTING
@@ -223,6 +227,11 @@ export class MyStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'User deployer Name', {
       value: userDeploer.userName,
     });
-    new cdk.CfnOutput(this, 'table', { value: articlesTable.table.tableName });
+    new cdk.CfnOutput(this, 'tableArticles', {
+      value: articlesTable.table.tableName,
+    });
+    new cdk.CfnOutput(this, 'tableGuidebook', {
+      value: guidebookTable.table.tableName,
+    });
   }
 }

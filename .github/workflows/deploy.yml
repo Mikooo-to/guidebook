@@ -88,13 +88,6 @@ jobs:
       - if: ${{ steps.cache-api.outputs.cache-hit != 'true' }}
         name: Deploy lambda main api
         run: |
-          zip -j lambda-main-api.zip api/lambdas/build/lambda-api/*.js
+          zip -r lambda-main-api.zip api/lambdas/build/lambda-api/ -i '*.js'
           aws lambda update-function-code --function-name ${{vars.LAMBDA_MAIN_API_ARN}} --zip-file fileb://lambda-main-api.zip
-
-
-
-
-
-
-
 

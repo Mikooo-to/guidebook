@@ -22,12 +22,13 @@
     "typescript": "~5.5.3"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.670.0",
     "@aws-sdk/client-secrets-manager": "^3.658.1",
-    "@aws-sdk/lib-dynamodb": "^3.665.0",
+    "@aws-sdk/lib-dynamodb": "^3.670.0",
     "@typedorm/common": "^1.15.4",
     "@typedorm/core": "^1.15.4",
+    "aws-sdk": "^2.1691.0",
     "lambda-api": "^1.1.0",
-    "reflect-metadata": "^0.2.2",
     "source-map-support": "^0.5.21"
   }
 }

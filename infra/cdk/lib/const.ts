@@ -9,16 +9,12 @@ export const subDomainNameApi = 'api.ukr.lublin.life';
 export const websiteIndexDocument = 'index.html';
 
 export const LAMBDAS: Record<
-  'api' | 'migration' | 'layerNodeModules',
+  'api' | 'layerNodeModules',
   { path: string; handler: string }
 > = {
   api: {
     path: '../../api/lambdas/build/lambda-api',
     handler: 'api-main.mainHandler',
-  },
-  migration: {
-    path: '../../api/lambdas/build/lambda-migration',
-    handler: 'migration-main.migrationHandler',
   },
   layerNodeModules: {
     path: '../../api/lambdas/build_lambda_layer/layer.zip',

@@ -7,19 +7,13 @@ import {
   APIGatewayProxyResult,
   Context,
 } from 'aws-lambda';
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import {
-  DynamoDBDocumentClient,
-  ScanCommand,
-  PutCommand,
-  GetCommand,
-  DeleteCommand,
-} from '@aws-sdk/lib-dynamodb';
 import createAPI, { Request, Response } from 'lambda-api';
 import { createConnection } from '@typedorm/core';
 import { guidebookTable } from './db/tables';
 import { Article } from './entities/article.entity';
 import { Section } from './entities/section.entity';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 
 /**
  * raw dynamodb access
@@ -32,9 +26,13 @@ import { Section } from './entities/section.entity';
  * typeDORM access
  */
 
+const dynamoDBClient = new DynamoDBClient({});
+const documentClient = DynamoDBDocumentClient.from(dynamoDBClient);
+
 const dbConnection = createConnection({
   table: guidebookTable,
   entities: [Article, Section],
+  documentClient,
 });
 
 const api = createAPI();

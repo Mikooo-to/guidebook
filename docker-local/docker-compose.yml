@@ -26,7 +26,7 @@ services:
     # restart: always
       
   dbadmin: 
-    container_name: dynamodb-admin
+    container_name: ${COMPOSE_PROJECT_NAME}_dynamodb-admin
     image: "aaronshaf/dynamodb-admin"
     depends_on:
       - db

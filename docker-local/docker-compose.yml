@@ -6,9 +6,32 @@ networks:
 
 services:
   api: 
+    container_name: ${COMPOSE_PROJECT_NAME}_api
     build:
       context: ..
-      dockerfile: docker/api/Dockerfile
+      dockerfile: docker-local/api/Dockerfile
     ports:
       - ${DOCKER_API_PORT}:8080
   
+  db:
+    container_name: ${COMPOSE_PROJECT_NAME}_db
+    image: amazon/dynamodb-local:latest
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    volumes:
+      - "./db:/home/dynamodblocal/data"
+    ports:
+      - "8000:8000"
+    # restart: always
+      
+  dbadmin: 
+    container_name: dynamodb-admin
+    image: "aaronshaf/dynamodb-admin"
+    depends_on:
+      - db
+    ports:
+      - "8001:8001"
+    environment:
+      - DYNAMO_ENDPOINT=http://db:8000
+      - AWS_REGION=ap-southeast-1      
+    # restart: always
+    

@@ -1,0 +1,92 @@
+{
+  "resource": "/{proxy+}",
+  "path": "/articles",
+  "httpMethod": "GET",
+  "headers": {
+    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+    "accept-encoding": "gzip, deflate, br, zstd",
+    "accept-language": "uk-UA,uk;q=0.9,en-US;q=0.8,en;q=0.7,pl;q=0.6",
+    "cache-control": "max-age=0",
+    "Host": "api.ukr.lublin.life",
+    "priority": "u=0, i",
+    "sec-ch-ua": "\"Google Chrome\";v=\"129\", \"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"129\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Linux\"",
+    "sec-fetch-dest": "document",
+    "sec-fetch-mode": "navigate",
+    "sec-fetch-site": "none",
+    "sec-fetch-user": "?1",
+    "upgrade-insecure-requests": "1",
+    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+    "X-Amzn-Trace-Id": "Root=1-67154245-2b39325b7e3296ea66f8bad9",
+    "X-Forwarded-For": "213.134.169.205",
+    "X-Forwarded-Port": "443",
+    "X-Forwarded-Proto": "https"
+  },
+  "multiValueHeaders": {
+    "accept": [
+      "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7"
+    ],
+    "accept-encoding": ["gzip, deflate, br, zstd"],
+    "accept-language": ["uk-UA,uk;q=0.9,en-US;q=0.8,en;q=0.7,pl;q=0.6"],
+    "cache-control": ["max-age=0"],
+    "Host": ["api.ukr.lublin.life"],
+    "priority": ["u=0, i"],
+    "sec-ch-ua": [
+      "\"Google Chrome\";v=\"129\", \"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"129\""
+    ],
+    "sec-ch-ua-mobile": ["?0"],
+    "sec-ch-ua-platform": ["\"Linux\""],
+    "sec-fetch-dest": ["document"],
+    "sec-fetch-mode": ["navigate"],
+    "sec-fetch-site": ["none"],
+    "sec-fetch-user": ["?1"],
+    "upgrade-insecure-requests": ["1"],
+    "User-Agent": [
+      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
+    ],
+    "X-Amzn-Trace-Id": ["Root=1-67154245-2b39325b7e3296ea66f8bad9"],
+    "X-Forwarded-For": ["213.134.169.205"],
+    "X-Forwarded-Port": ["443"],
+    "X-Forwarded-Proto": ["https"]
+  },
+  "queryStringParameters": null,
+  "multiValueQueryStringParameters": null,
+  "pathParameters": {
+    "proxy": "articles"
+  },
+  "stageVariables": null,
+  "requestContext": {
+    "resourceId": "8da2v2",
+    "resourcePath": "/{proxy+}",
+    "httpMethod": "GET",
+    "extendedRequestId": "f9dK4EpHFiAEe1g=",
+    "requestTime": "20/Oct/2024:17:47:49 +0000",
+    "path": "/articles",
+    "accountId": "652460108554",
+    "protocol": "HTTP/1.1",
+    "stage": "prod",
+    "domainPrefix": "api",
+    "requestTimeEpoch": 1729446469318,
+    "requestId": "e613b846-d956-4ee9-9a1f-723e4f71e7fd",
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": null,
+      "cognitoIdentityId": null,
+      "caller": null,
+      "sourceIp": "213.134.169.205",
+      "principalOrgId": null,
+      "accessKey": null,
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": null,
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+      "user": null
+    },
+    "domainName": "api.ukr.lublin.life",
+    "deploymentId": "au65je",
+    "apiId": "s21l7h9vn4"
+  },
+  "body": null,
+  "isBase64Encoded": false
+}

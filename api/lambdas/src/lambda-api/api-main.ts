@@ -53,5 +53,8 @@ export const mainHandler = async (
   event: APIGatewayProxyEvent,
   context: Context,
 ): Promise<APIGatewayProxyResult> => {
-  return await api.run(event, context);
+    console.log('-----------EVENT-----------');
+    console.log(event);
+    console.log('=========END EVENT=========');
+    return await api.run(event, context);
 };

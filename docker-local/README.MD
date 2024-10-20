@@ -6,7 +6,9 @@ to start cd to docker-local folder and there
 docker compose build
 docker compose up
 ```
-Note: you need to rebuild container every time you change code or change dependencies (package.json)
+Note: 
+- you need to rebuild container every time you change dependencies (package.json)
+- you need to restart container every time code changes
 
 Then you can access lambda fuction from local machine, for example:
 

@@ -1,0 +1,17 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "invoke-lambda",
+      "command": "curl",
+      "args": [
+        "-XPOST",
+        "http://localhost:9000/2015-03-31/functions/function/invocations",
+        "-d",
+        "'{\"payload\": \"hello world!\"}'"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}

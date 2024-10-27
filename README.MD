@@ -2,6 +2,7 @@
 /frontend
 /api
 /infra
+/docker-local
 
 ## To deploy use aws cdk: 
 

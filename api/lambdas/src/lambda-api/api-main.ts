@@ -12,8 +12,10 @@ import { createConnection } from '@typedorm/core';
 import { guidebookTable } from './db/tables';
 import { Article } from './entities/article.entity';
 import { Section } from './entities/section.entity';
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import { getEntityManager } from '@typedorm/core';
+import { DocumentClientV3 } from '@typedorm/document-client';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 
 /**
  * raw dynamodb access
@@ -26,8 +28,11 @@ import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
  * typeDORM access
  */
 
-const dynamoDBClient = new DynamoDBClient({});
-const documentClient = DynamoDBDocumentClient.from(dynamoDBClient);
+const documentClient = new DocumentClientV3(
+  new DynamoDBClient({
+    region: 'eu-central-1',
+  }),
+);
 
 const dbConnection = createConnection({
   table: guidebookTable,
@@ -53,8 +58,9 @@ export const mainHandler = async (
   event: APIGatewayProxyEvent,
   context: Context,
 ): Promise<APIGatewayProxyResult> => {
-    console.log('-----------EVENT-----------');
-    console.log(event);
-    console.log('=========END EVENT=========');
-    return await api.run(event, context);
+  debugger;
+  console.log('-----------EVENT-----------');
+  console.log(event);
+  console.log('=========END EVENT=========');
+  return await api.run(event, context);
 };

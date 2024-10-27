@@ -10,8 +10,11 @@ services:
     build:
       context: ..
       dockerfile: docker-local/api/Dockerfile
+    environment:
+      - NODE_OPTIONS=--inspect=0.0.0.0:9229
     ports:
       - ${DOCKER_API_PORT}:8080
+      - "9229:9229"
     volumes:
       - "../api/lambdas/build/lambda-api/:/var/task"
   

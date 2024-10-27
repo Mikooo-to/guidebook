@@ -1,7 +1,7 @@
 version: '3.8'
 networks:
   guidebook_net:
-    name: ${COMPOSE_PROJECT_NAME}_network
+    name: ${DOCKER_PROJECT_NAME}_network
     driver: bridge
 
 services:
@@ -12,14 +12,8 @@ services:
       dockerfile: docker-local/api/Dockerfile
     ports:
       - ${DOCKER_API_PORT}:8080
-      - "9229:9229"
     volumes:
       - "../api/lambdas/build/lambda-api/:/var/task"
-    environment:
-      - DEBUG_MODE=true
-      - AWS_LAMBDA_FUNCTION_TIMEOUT=0
-    entrypoint: []  # Override the default entrypoint
-    command: ["/usr/local/bin/aws-lambda-rie", "/var/runtime/bootstrap"]
   
   db:
     container_name: ${COMPOSE_PROJECT_NAME}_db

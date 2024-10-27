@@ -12,8 +12,6 @@ import { createConnection } from '@typedorm/core';
 import { guidebookTable } from './db/tables';
 import { Article } from './entities/article.entity';
 import { Section } from './entities/section.entity';
-import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
-import { getEntityManager } from '@typedorm/core';
 import { DocumentClientV3 } from '@typedorm/document-client';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 
@@ -30,7 +28,12 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 
 const documentClient = new DocumentClientV3(
   new DynamoDBClient({
-    region: 'eu-central-1',
+    region: process.env.AWS_REGION,
+    endpoint: process.env.DYNAMODB_ENDPOINT,
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    },
   }),
 );
 

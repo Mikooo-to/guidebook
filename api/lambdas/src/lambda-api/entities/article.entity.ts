@@ -9,7 +9,7 @@ import {
 @Entity({
   name: 'article',
   primaryKey: {
-    partitionKey: 'ARTICLE#ID#{{id}}',
+    partitionKey: 'ARTICLE',
     sortKey: 'ARTICLE#ID#{{id}}',
   },
   indexes: {

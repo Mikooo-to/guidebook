@@ -7,6 +7,7 @@ import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as targets from 'aws-cdk-lib/aws-route53-targets';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
+import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 
 import { Construct } from 'constructs';
 import {
@@ -19,7 +20,6 @@ import {
   userDeploerName,
   websiteIndexDocument,
 } from './const';
-import { ArticlesDynamoDbTable } from './db-tables/articles-table';
 import { GuidebookDynamoDbTable } from './db-tables/guidebook-table';
 
 export class MyStack extends cdk.Stack {
@@ -29,6 +29,14 @@ export class MyStack extends cdk.Stack {
     // user to deploy code
     const userDeploer = new iam.User(this, `${projectName}Deployer`, {
       userName: userDeploerName,
+    });
+
+    // Create a secret for the API key
+    const apiKeySecret = new secretsmanager.Secret(this, 'GuidebookApiKey', {
+      generateSecretString: {
+        excludePunctuation: true,
+      },
+      description: 'API Key for Guidebook API',
     });
 
     /**
@@ -120,6 +128,7 @@ export class MyStack extends cdk.Stack {
       role: lambdaCommonRole,
       environment: {
         GUIDEBOOK_TABLE_NAME: guidebookTable.table.tableName,
+        API_KEY_SECRET_ARN: apiKeySecret.secretArn,
       },
     });
 
@@ -132,6 +141,15 @@ export class MyStack extends cdk.Stack {
         allowOrigins: apigateway.Cors.ALL_ORIGINS,
         allowMethods: apigateway.Cors.ALL_METHODS,
       },
+      defaultMethodOptions: {
+        apiKeyRequired: true, // Require API key for all methods
+      },
+    });
+
+    // Create API key for API Gateway
+    const apiKey = api.addApiKey('GuidebookApiKey', {
+      apiKeyName: 'guidebook-api-key',
+      value: apiKeySecret.secretValue.unsafeUnwrap().toString(),
     });
 
     // user policy to deploy code

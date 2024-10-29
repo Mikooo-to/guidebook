@@ -14,6 +14,10 @@ import { Article } from './entities/article.entity';
 import { Section } from './entities/section.entity';
 import { DocumentClientV3 } from '@typedorm/document-client';
 import { DynamoDBClient, DynamoDBClientConfig } from '@aws-sdk/client-dynamodb';
+import {
+  SecretsManagerClient,
+  GetSecretValueCommand,
+} from '@aws-sdk/client-secrets-manager';
 
 /**
  * raw dynamodb access
@@ -28,10 +32,9 @@ import { DynamoDBClient, DynamoDBClientConfig } from '@aws-sdk/client-dynamodb';
 
 console.log(process.env.AWS_REGION);
 console.log(process.env.DYNAMODB_ENDPOINT);
-console.log(process.env.AWS_ACCESS_KEY_ID);
-console.log(process.env.AWS_SECRET_ACCESS_KEY);
 console.log(process.env.GUIDEBOOK_TABLE_NAME);
 
+// access credentials need only for local dynamodb. Remote Prod works using IAM permissions which are defined in the cdk.
 const dynamoDBClientConfig: DynamoDBClientConfig =
   process.env.NODE_ENV === 'local'
     ? {
@@ -54,17 +57,39 @@ const dbConnection = createConnection({
   documentClient,
 });
 
+const secretsManager = new SecretsManagerClient({
+  region: process.env.AWS_REGION,
+});
+
+const validateApiKey = async (providedApiKey: string): Promise<boolean> => {
+  if (process.env.NODE_ENV === 'local') {
+    return providedApiKey === process.env.API_KEY;
+  }
+  try {
+    const command = new GetSecretValueCommand({
+      SecretId: process.env.API_KEY_SECRET_ARN,
+    });
+    const response = await secretsManager.send(command);
+    const storedApiKey = response.SecretString;
+    return providedApiKey === storedApiKey;
+  } catch (error) {
+    console.error('Error validating API key:', error);
+    return false;
+  }
+};
+
 const api = createAPI();
 
-api.get('/articles', async (req: Request, res: Response) => {
+api.post('/articles', async (req: Request, res: Response) => {
+  const { content, name, section, status } = req.body;
   const article = new Article();
-  article.content = 'content 1';
-  article.name = 'name 1';
-  article.section = 'section 1';
-  article.status = 'status 1';
-
+  Object.assign(article, { content, name, section, status });
   const result = await dbConnection.entityManager.create(article);
+  res.status(200).send(result);
+});
 
+api.get('/articles', async (req: Request, res: Response) => {
+  const result = await dbConnection.entityManager.find(Article, {});
   res.status(200).send(result);
 });
 
@@ -73,6 +98,13 @@ export const mainHandler = async (
   context: Context,
 ): Promise<APIGatewayProxyResult> => {
   debugger;
+  const apiKey = event.headers['x-api-key'];
+  if (!apiKey || !(await validateApiKey(apiKey))) {
+    return {
+      statusCode: 401,
+      body: JSON.stringify({ message: 'Invalid API key' }),
+    };
+  }
   console.log('-----------EVENT-----------');
   console.log(event);
   console.log('=========END EVENT=========');

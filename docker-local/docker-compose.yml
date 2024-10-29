@@ -14,6 +14,7 @@ services:
       - NODE_OPTIONS=--inspect=0.0.0.0:9229
       - AWS_ACCESS_KEY_ID=DUMMYIDEXAMPLE
       - AWS_SECRET_ACCESS_KEY=DUMMYIDEXAMPLE
+      - API_KEY=DUMMYIDEXAMPLE
       - AWS_REGION=localhost
       - NODE_ENV=local
       - GUIDEBOOK_TABLE_NAME=guidebooktableD4A14560

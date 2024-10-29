@@ -1,0 +1,67 @@
+{
+  "resource": "/{proxy+}",
+  "path": "/articles",
+  "httpMethod": "POST",
+  "headers": {
+    "accept": "application/json",
+    "accept-encoding": "gzip, deflate",
+    "content-type": "application/json",
+    "Host": "api.ukr.lublin.life",
+    "User-Agent": "vscode-restclient",
+    "X-Amzn-Trace-Id": "Root=1-67212a03-3dba1b9a6d04a7192ea3a3d3",
+    "X-Forwarded-For": "213.134.169.205",
+    "X-Forwarded-Port": "443",
+    "X-Forwarded-Proto": "https",
+    "x-api-key": "DUMMYIDEXAMPLE"
+  },
+  "multiValueHeaders": {
+    "accept": ["application/json"],
+    "accept-encoding": ["gzip, deflate"],
+    "content-type": ["application/json"],
+    "Host": ["api.ukr.lublin.life"],
+    "User-Agent": ["vscode-restclient"],
+    "X-Amzn-Trace-Id": ["Root=1-67212a03-3dba1b9a6d04a7192ea3a3d3"],
+    "X-Forwarded-For": ["213.134.169.205"],
+    "X-Forwarded-Port": ["443"],
+    "X-Forwarded-Proto": ["https"]
+  },
+  "queryStringParameters": null,
+  "multiValueQueryStringParameters": null,
+  "pathParameters": {
+    "proxy": "articles"
+  },
+  "stageVariables": null,
+  "requestContext": {
+    "resourceId": "8da2v2",
+    "resourcePath": "/{proxy+}",
+    "httpMethod": "POST",
+    "extendedRequestId": "AbOArGYaliAEQOw=",
+    "requestTime": "29/Oct/2024:18:31:31 +0000",
+    "path": "/articles",
+    "accountId": "652460108554",
+    "protocol": "HTTP/1.1",
+    "stage": "prod",
+    "domainPrefix": "api",
+    "requestTimeEpoch": 1730226691935,
+    "requestId": "84281085-9dac-4ca3-897d-0624272f74c9",
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": null,
+      "cognitoIdentityId": null,
+      "caller": null,
+      "sourceIp": "213.134.169.205",
+      "principalOrgId": null,
+      "accessKey": null,
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": null,
+      "userAgent": "vscode-restclient",
+      "user": null
+    },
+    "domainName": "api.ukr.lublin.life",
+    "deploymentId": "au65je",
+    "apiId": "s21l7h9vn4"
+  },
+  "body": "\n{ \"content\": \"content2\", \"name\": \"name2\", \"section\": \"section2\", \"status\": \"status2\"\n}",
+  "isBase64Encoded": false
+}

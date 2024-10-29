@@ -22,5 +22,6 @@ curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d
 
 
 ## LOCAL DB
-to be able to start locally you need to create table in the local dynamodb using UI at http://localhost:8001/
+Local DB is included to the commit.
+Yet, if the structure or name has changed, you need to (re-)create table in the local dynamodb using UI at http://localhost:8001/
 use data from guidebook-table.ts to get necessary params of the data table

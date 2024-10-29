@@ -19,3 +19,8 @@ or
 ```bash
 curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d @event-mocks/get-articles.json
 ```
+
+
+## LOCAL DB
+to be able to start locally you need to create table in the local dynamodb using UI at http://localhost:8001/
+use data from guidebook-table.ts to get necessary params of the data table

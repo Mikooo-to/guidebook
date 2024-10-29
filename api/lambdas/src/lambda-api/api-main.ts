@@ -30,6 +30,7 @@ console.log(process.env.AWS_REGION);
 console.log(process.env.DYNAMODB_ENDPOINT);
 console.log(process.env.AWS_ACCESS_KEY_ID);
 console.log(process.env.AWS_SECRET_ACCESS_KEY);
+console.log(process.env.GUIDEBOOK_TABLE_NAME);
 
 const dynamoDBClientConfig: DynamoDBClientConfig =
   process.env.NODE_ENV === 'local'
@@ -48,7 +49,7 @@ const documentClient = new DocumentClientV3(
 );
 
 const dbConnection = createConnection({
-  table: guidebookTable,
+  table: guidebookTable({ tableName: process.env.GUIDEBOOK_TABLE_NAME! }),
   entities: [Article, Section],
   documentClient,
 });

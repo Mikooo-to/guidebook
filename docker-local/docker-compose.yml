@@ -16,6 +16,7 @@ services:
       - AWS_SECRET_ACCESS_KEY=DUMMYIDEXAMPLE
       - AWS_REGION=localhost
       - NODE_ENV=local
+      - GUIDEBOOK_TABLE_NAME=guidebooktableD4A14560
       - DYNAMODB_ENDPOINT=http://db:8000    
     ports:
       - ${DOCKER_API_PORT}:8080

@@ -26,6 +26,11 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
  * typeDORM access
  */
 
+console.log(process.env.AWS_REGION);
+console.log(process.env.DYNAMODB_ENDPOINT);
+console.log(process.env.AWS_ACCESS_KEY_ID);
+console.log(process.env.AWS_SECRET_ACCESS_KEY);
+
 const documentClient = new DocumentClientV3(
   new DynamoDBClient({
     region: process.env.AWS_REGION,

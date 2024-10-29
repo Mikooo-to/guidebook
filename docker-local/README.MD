@@ -7,11 +7,15 @@ docker compose build
 docker compose up
 ```
 Note: 
-- you need to rebuild container every time you change dependencies (package.json)
+- you need to rebuild container every time you change dependencies (package.json) (because of using layer to provike node_modules)
 - you need to restart container every time code changes
 
 Then you can access lambda fuction from local machine, for example:
 
 ```bash
 curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{"payload":"hello world!"}'
+```
+or 
+```bash
+curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d @event-mocks/get-articles.json
 ```

@@ -1,3 +1,8 @@
+# DEPRECATED
+
+use aws-cdk in the folder ../cdk to deploy project.
+this folder is only for history.
+
 ## Api deployer user and resources creation
 
 Use `deploy-runner.sh` scrypt for some basic CF stack manipulations, run `deploy-runner.sh help` for details

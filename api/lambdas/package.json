@@ -4,6 +4,7 @@
   "scripts": {
     "layer": "rimraf build_lambda_layer && mkdir -p build_lambda_layer/nodejs/node20 && ln -sf ../../../node_modules build_lambda_layer/nodejs/node20/ && cd build_lambda_layer && zip -r layer.zip nodejs -x \"*/.*\" && cd ..",
     "copy-sql": "copyfiles -u 1 src/**/*.sql build",
+    "rebuild": "rimraf build && tsc && docker compose -f ../../docker-local/docker-compose.yml restart api",
     "build": "rimraf build && tsc",
     "watch": "tsc -w",
     "test": "jest"

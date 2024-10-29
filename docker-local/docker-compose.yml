@@ -12,9 +12,10 @@ services:
       dockerfile: docker-local/api/Dockerfile
     environment:
       - NODE_OPTIONS=--inspect=0.0.0.0:9229
-      - AWS_ACCESS_KEY_ID=LOCAL_FAKE_KEY
-      - AWS_SECRET_ACCESS_KEY=LOCAL_FAKE_SECRET
+      - AWS_ACCESS_KEY_ID=DUMMYIDEXAMPLE
+      - AWS_SECRET_ACCESS_KEY=DUMMYIDEXAMPLE
       - AWS_REGION=localhost
+      - NODE_ENV=local
       - DYNAMODB_ENDPOINT=http://db:8000    
     ports:
       - ${DOCKER_API_PORT}:8080

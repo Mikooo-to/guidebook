@@ -1,6 +1,6 @@
 # Welcome to your CDK TypeScript project
 
-This is a blank project for CDK development with TypeScript.
+code is located in the folder ./lib
 
 The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
@@ -9,12 +9,11 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 * `npm run build`   compile typescript to js
 * `npm run watch`   watch for changes and compile
 * `npm run test`    perform the jest unit tests
+* `npm run cdk:deploy` build and deploy this stack to your default AWS account/region
 * `npx cdk deploy`  deploy this stack to your default AWS account/region
 * `npx cdk diff`    compare deployed stack with current state
 * `npx cdk synth`   emits the synthesized CloudFormation template
 
 
-### Run dynamodb container on the above network
-```bash
-docker run -d -p 8000:8000 --network $network_name --name $container_name amazon/dynamodb-local
-```
+### Run project locally 
+see file ../docker-local/README.MD

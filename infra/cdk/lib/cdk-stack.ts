@@ -32,12 +32,6 @@ export class MyStack extends cdk.Stack {
     });
 
     /**
-     *  Database
-     */
-    const articlesTable = new ArticlesDynamoDbTable(this);
-    const guidebookTable = new GuidebookDynamoDbTable(this);
-
-    /**
      *  FRONTEND
      */
 
@@ -74,6 +68,9 @@ export class MyStack extends cdk.Stack {
     const vpc = ec2.Vpc.fromLookup(this, 'VPC', {
       isDefault: true,
     });
+
+    // Database
+    const guidebookTable = new GuidebookDynamoDbTable(this);
 
     // Lambda functions
     const lambdaCommonRole = new iam.Role(this, `${projectName}-lambdarole`, {
@@ -122,7 +119,6 @@ export class MyStack extends cdk.Stack {
       handler: LAMBDAS.api.handler,
       role: lambdaCommonRole,
       environment: {
-        ARTICLES_TABLE_NAME: articlesTable.table.tableName,
         GUIDEBOOK_TABLE_NAME: guidebookTable.table.tableName,
       },
     });
@@ -160,7 +156,6 @@ export class MyStack extends cdk.Stack {
       }),
     );
 
-    articlesTable.table.grantFullAccess(lambdaFnApi);
     guidebookTable.table.grantFullAccess(lambdaFnApi);
 
     /**
@@ -226,9 +221,6 @@ export class MyStack extends cdk.Stack {
     });
     new cdk.CfnOutput(this, 'User deployer Name', {
       value: userDeploer.userName,
-    });
-    new cdk.CfnOutput(this, 'tableArticles', {
-      value: articlesTable.table.tableName,
     });
     new cdk.CfnOutput(this, 'tableGuidebook', {
       value: guidebookTable.table.tableName,

@@ -13,7 +13,7 @@ import { guidebookTable } from './db/tables';
 import { Article } from './entities/article.entity';
 import { Section } from './entities/section.entity';
 import { DocumentClientV3 } from '@typedorm/document-client';
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DynamoDBClient, DynamoDBClientConfig } from '@aws-sdk/client-dynamodb';
 
 /**
  * raw dynamodb access
@@ -31,15 +31,20 @@ console.log(process.env.DYNAMODB_ENDPOINT);
 console.log(process.env.AWS_ACCESS_KEY_ID);
 console.log(process.env.AWS_SECRET_ACCESS_KEY);
 
+const dynamoDBClientConfig: DynamoDBClientConfig =
+  process.env.NODE_ENV === 'local'
+    ? {
+        region: process.env.AWS_REGION,
+        endpoint: process.env.DYNAMODB_ENDPOINT,
+        credentials: {
+          accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+        },
+      }
+    : {};
+
 const documentClient = new DocumentClientV3(
-  new DynamoDBClient({
-    region: process.env.AWS_REGION,
-    endpoint: process.env.DYNAMODB_ENDPOINT,
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-    },
-  }),
+  new DynamoDBClient(dynamoDBClientConfig),
 );
 
 const dbConnection = createConnection({

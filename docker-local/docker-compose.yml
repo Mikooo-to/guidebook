@@ -15,6 +15,7 @@ services:
       - AWS_ACCESS_KEY_ID=DUMMYIDEXAMPLE
       - AWS_SECRET_ACCESS_KEY=DUMMYIDEXAMPLE
       - AWS_REGION=localhost
+      - NODE_ENV=local
       - DYNAMODB_ENDPOINT=http://db:8000    
     ports:
       - ${DOCKER_API_PORT}:8080

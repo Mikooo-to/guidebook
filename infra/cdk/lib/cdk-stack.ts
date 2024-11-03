@@ -111,6 +111,13 @@ export class MyStack extends cdk.Stack {
         'service-role/AWSLambdaVPCAccessExecutionRole',
       ),
     );
+    lambdaCommonRole.addToPolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['secretsmanager:GetSecretValue'],
+        resources: [apiKeySecret.secretArn],
+      }),
+    );
 
     // Create a layer for node_modules
     const nodeModulesLayer = new lambda.LayerVersion(this, 'NodeModulesLayer', {
@@ -133,6 +140,7 @@ export class MyStack extends cdk.Stack {
     });
 
     // Api
+
     const api = new apigateway.LambdaRestApi(this, 'guidebook-main-api', {
       handler: lambdaFnApi,
       proxy: true,
@@ -151,6 +159,20 @@ export class MyStack extends cdk.Stack {
       apiKeyName: 'guidebook-api-key',
       value: apiKeySecret.secretValue.unsafeUnwrap().toString(),
     });
+
+    // Create a usage plan - mandatory for api key to work
+    const usagePlan = api.addUsagePlan('GuidebookUsagePlan', {
+      name: 'guidebook-usage-plan',
+      apiStages: [
+        {
+          api: api,
+          stage: api.deploymentStage,
+        },
+      ],
+    });
+    // Associate the API key with the usage plan
+    usagePlan.addApiKey(apiKey);    
+    
 
     // user policy to deploy code
     userDeploer.attachInlinePolicy(

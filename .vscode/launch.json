@@ -5,7 +5,7 @@
       // "preLaunchTask": "invoke-lambda",
       "type": "node",
       "request": "attach",
-      "name": "Debug Lambda Function",
+      "name": "Debug Lambda Function if started in docker",
       "address": "localhost",
       "port": 9229,
       "localRoot": "${workspaceFolder}/api/lambdas/src/lambda-api",
@@ -20,5 +20,17 @@
         "/var/task/": "${workspaceFolder}/api/lambdas/build/lambda-api"
       }
     },
+    {
+      "name": "SAM API",
+      "type": "node",
+      "request": "attach",
+      "address": "localhost",
+      "port": 5858,
+      "localRoot": "${workspaceFolder}/api/lambdas/src/lambda-api",
+      "remoteRoot": "/var/task",
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    }
   ]
 }

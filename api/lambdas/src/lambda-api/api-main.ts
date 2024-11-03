@@ -98,7 +98,7 @@ export const mainHandler = async (
   context: Context,
 ): Promise<APIGatewayProxyResult> => {
   debugger;
-  const apiKey = event.headers['x-api-key'];
+  const apiKey = event.headers['x-api-key'] || event.headers['X-Api-Key'];
   if (!apiKey || !(await validateApiKey(apiKey))) {
     return {
       statusCode: 401,

@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2010-09-09
+Resources:
+  # define layer
+  MyLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: ../api/lambdas/build_lambda_layer
+      CompatibleRuntimes:
+        - nodejs20.x
+      LayerName: node-modules
+      Description: Layer for node_modules
+  # define api function 
+  MyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: api-main.mainHandler
+      Runtime: nodejs20.x
+      CodeUri: ../api/lambdas/build/lambda-api
+      Environment:
+        Variables:
+          AWS_ACCESS_KEY_ID: DUMMYIDEXAMPLE
+          AWS_SECRET_ACCESS_KEY: DUMMYIDEXAMPLE
+          API_KEY: DUMMYIDEXAMPLE
+          AWS_REGION: localhost
+          NODE_ENV: local
+          GUIDEBOOK_TABLE_NAME: guidebooktableD4A14560
+          DYNAMODB_ENDPOINT: http://gb_db:8000          
+      Layers:
+            - !Ref MyLayer    # Reference to the layer
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY

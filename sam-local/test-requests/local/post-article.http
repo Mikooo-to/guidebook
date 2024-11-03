@@ -1,0 +1,12 @@
+curl -X 'POST' \
+  'https://127.0.0.1:3000/articles' \
+  -H 'x-api-key: DUMMYIDEXAMPLE' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '
+{
+  "content": "content3",
+  "name": "name3",
+  "section": "section3",
+  "status": "status3"
+}'

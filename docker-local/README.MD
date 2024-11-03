@@ -1,6 +1,12 @@
 # Purpose of the docker-local is to provide environment for local development. Not needed for production
 
-## API
+## LOCAL DB
+Local DB is included to the commit.
+Yet, if the structure or name has changed, you need to (re-)create table in the local dynamodb using UI at http://localhost:8001/
+use data from guidebook-table.ts to get necessary params of the data table
+
+
+# API - you can start api eather in the docker(see below) or start api using sam (see ../sam-local/README.MD)
 to start cd to docker-local folder and there
 ```bash
 docker compose build
@@ -20,8 +26,3 @@ or
 curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d @event-mocks/get-articles.json
 ```
 
-
-## LOCAL DB
-Local DB is included to the commit.
-Yet, if the structure or name has changed, you need to (re-)create table in the local dynamodb using UI at http://localhost:8001/
-use data from guidebook-table.ts to get necessary params of the data table

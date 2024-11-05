@@ -32,11 +32,15 @@ export class MyStack extends cdk.Stack {
     });
 
     // Create a secret for the API key
-    const apiKeySecret = new secretsmanager.Secret(this, 'GuidebookApiKey', {
+    const appSecrets = new secretsmanager.Secret(this, 'GuidebookApiKey', {
+      secretName: 'sectrestsForGuidebook',
+      description: 'Secrets for Guidebook API',
       generateSecretString: {
+        secretStringTemplate: JSON.stringify({}),
+        generateStringKey: 'API_KEY',
         excludePunctuation: true,
+        includeSpace: false,
       },
-      description: 'API Key for Guidebook API',
     });
 
     /**
@@ -115,7 +119,7 @@ export class MyStack extends cdk.Stack {
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
         actions: ['secretsmanager:GetSecretValue'],
-        resources: [apiKeySecret.secretArn],
+        resources: [appSecrets.secretArn],
       }),
     );
 
@@ -135,7 +139,7 @@ export class MyStack extends cdk.Stack {
       role: lambdaCommonRole,
       environment: {
         GUIDEBOOK_TABLE_NAME: guidebookTable.table.tableName,
-        API_KEY_SECRET_ARN: apiKeySecret.secretArn,
+        SECRETS_ARN: appSecrets.secretArn,
       },
     });
 
@@ -157,7 +161,7 @@ export class MyStack extends cdk.Stack {
     // Create API key for API Gateway
     const apiKey = api.addApiKey('GuidebookApiKey', {
       apiKeyName: 'guidebook-api-key',
-      value: apiKeySecret.secretValue.unsafeUnwrap().toString(),
+      value: appSecrets.secretValue.toJSON().apiKey,
     });
 
     // Create a usage plan - mandatory for api key to work

@@ -143,7 +143,7 @@ export class MyStack extends cdk.Stack {
       },
     });
 
-    // Api
+    // ApiGateway
 
     const api = new apigateway.LambdaRestApi(this, 'guidebook-main-api', {
       handler: lambdaFnApi,
@@ -175,8 +175,7 @@ export class MyStack extends cdk.Stack {
       ],
     });
     // Associate the API key with the usage plan
-    usagePlan.addApiKey(apiKey);    
-    
+    usagePlan.addApiKey(apiKey);
 
     // user policy to deploy code
     userDeploer.attachInlinePolicy(

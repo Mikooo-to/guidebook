@@ -1,8 +1,13 @@
 ## repository consists of
-/frontend
-/api
-/infra
-/docker-local
+/frontend     - frontend
+/api          - api based on lambda function and dynamodb
+/infra        - infrastructure do automatically deploy frontend and api and other necessary stuff at aws using cdk
+/docker-local - docker configuration to start api and db locally. Api accesable only using labda function manual invocation
+/sam-local    - alternative way to start api locally (enable api access using http calls, not only manual invocation)
+
+## To start locally, 
+see instructions at  /docker-local/README.MD and /sam-local/README.MD
+
 
 ## To deploy use aws cdk: 
 
@@ -23,7 +28,12 @@ cdk bootstrap --profile guidebook
 ```
 it will create necessary roles in your aws account/zone  (CloudFormationExecutionRole, ...etc)
 
-## then compile ts code
+## then cd to infra/cdk 
+```bash
+cd infra/cdk
+```
+
+### Compile ts code
 ```bash
 npm run build
 ```

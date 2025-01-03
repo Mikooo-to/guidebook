@@ -153,6 +153,18 @@ export class MyStack extends cdk.Stack {
       defaultCorsPreflightOptions: {
         allowOrigins: apigateway.Cors.ALL_ORIGINS,
         allowMethods: apigateway.Cors.ALL_METHODS,
+        allowHeaders: [
+          'Content-Type',
+          'X-Amz-Date',
+          'Authorization',
+          'X-Api-Key',
+          'X-Amz-Security-Token',
+          'X-Amz-User-Agent',
+        ],
+        exposeHeaders: [
+          'Access-Control-Allow-Origin',
+          'Access-Control-Allow-Credentials',
+        ],
       },
       defaultMethodOptions: {
         apiKeyRequired: true, // Require API key for all methods
@@ -272,6 +284,9 @@ export class MyStack extends cdk.Stack {
     });
     new cdk.CfnOutput(this, 'tableGuidebook', {
       value: guidebookTable.table.tableName,
+    });
+    new cdk.CfnOutput(this, 'apiKeyId', {
+      value: apiGatewayKey.keyId,
     });
   }
 }

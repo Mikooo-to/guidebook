@@ -7,7 +7,7 @@ import {
   APIGatewayProxyResult,
   Context,
 } from 'aws-lambda';
-import createAPI, { Request, Response } from 'lambda-api';
+import createAPI, { NextFunction, Request, Response } from 'lambda-api';
 import { createConnection } from '@typedorm/core';
 import { guidebookTable } from './db/tables';
 import { Article } from './entities/article.entity';
@@ -62,7 +62,7 @@ const secretsManager = new SecretsManagerClient({
 });
 
 // // Not needed anymore - rely on apigateway key - left as example of accessing secrets
-// 
+//
 // const validateApiKey = async (providedApiKey: string): Promise<boolean> => {
 //   if (process.env.NODE_ENV === 'local') {
 //     return providedApiKey === process.env.API_KEY;
@@ -81,6 +81,16 @@ const secretsManager = new SecretsManagerClient({
 // };
 
 const api = createAPI();
+
+api.use((req: Request, res: Response, next: NextFunction) => {
+  res.cors({
+    origin: '*', // Allow all origins
+    methods: 'GET, POST, PUT, DELETE', // Allowed methods
+    headers: 'Content-Type, Authorization', // Allowed headers
+    maxAge: 86400, // Cache preflight request for 1 day
+  });
+  next();
+});
 
 api.post('/articles', async (req: Request, res: Response) => {
   const { content, name, section, status } = req.body;

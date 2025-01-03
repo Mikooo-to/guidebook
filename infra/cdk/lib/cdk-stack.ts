@@ -3,7 +3,6 @@ import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
-import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as targets from 'aws-cdk-lib/aws-route53-targets';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
@@ -11,6 +10,7 @@ import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 
 import { Construct } from 'constructs';
 import {
+  API_KEY,
   domainName,
   frontendBucketName,
   LAMBDAS,
@@ -34,10 +34,11 @@ export class MyStack extends cdk.Stack {
     // Create a secret for the API key
     const appSecrets = new secretsmanager.Secret(this, 'GuidebookApiKey', {
       secretName: 'sectrestsForGuidebook',
-      description: 'Secrets for Guidebook API',
+      description: 'Secrets for Guidebook API v2',
       generateSecretString: {
         secretStringTemplate: JSON.stringify({}),
-        generateStringKey: 'API_KEY',
+        passwordLength: 40,
+        generateStringKey: API_KEY,
         excludePunctuation: true,
         includeSpace: false,
       },
@@ -77,9 +78,10 @@ export class MyStack extends cdk.Stack {
      */
 
     // Use the default VPC
-    const vpc = ec2.Vpc.fromLookup(this, 'VPC', {
-      isDefault: true,
-    });
+    // not needed for now
+    // const vpc = ec2.Vpc.fromLookup(this, 'VPC', {
+    //   isDefault: true,
+    // });
 
     // Database
     const guidebookTable = new GuidebookDynamoDbTable(this);
@@ -159,23 +161,28 @@ export class MyStack extends cdk.Stack {
     });
 
     // Create API key for API Gateway
-    const apiKey = api.addApiKey('GuidebookApiKey', {
-      apiKeyName: 'guidebook-api-key',
-      value: appSecrets.secretValue.toJSON().apiKey,
+    const apiGatewayKey = new apigateway.ApiKey(
+      this,
+      'GuidebookApiGatewayKey',
+      {
+        apiKeyName: 'guidebook-api-key',
+        value: appSecrets.secretValue.toJSON()[API_KEY],
+      },
+    );
+
+    // Create a usage plan
+    const usagePlan = new apigateway.UsagePlan(this, 'GuidebookUsagePlan', {
+      name: 'guidebook-usage-plan',
     });
 
-    // Create a usage plan - mandatory for api key to work
-    const usagePlan = api.addUsagePlan('GuidebookUsagePlan', {
-      name: 'guidebook-usage-plan',
-      apiStages: [
-        {
-          api: api,
-          stage: api.deploymentStage,
-        },
-      ],
+    // Add the API stage to the usage plan
+    usagePlan.addApiStage({
+      api: api,
+      stage: api.deploymentStage,
     });
+
     // Associate the API key with the usage plan
-    usagePlan.addApiKey(apiKey);
+    usagePlan.addApiKey(apiGatewayKey);
 
     // user policy to deploy code
     userDeploer.attachInlinePolicy(

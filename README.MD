@@ -55,14 +55,14 @@ Go to the aws console and create aws credentials for the user guidebook-deployer
 ## set up github actions secrets and variables using created credentials
 
 set secrets
-`APIGATEWAY_KEY` - the key you can retrieve using command `aws apigateway get-api-key --api-key <<key_id_from_cdk_deploy_output>> --include-value --query value --output text ` or at the aws API Gateway console 
+`REACT_APP_APIGATEWAY_KEY` - the key you can retrieve using command `aws apigateway get-api-key --api-key <<key_id_from_cdk_deploy_output>> --include-value --query value --output text ` or at the aws API Gateway console 
 `AWS_ACCESS_KEY_ID` - key id for this app that you must get at the aws console IAM Security credentials
 `AWS_SECRET_ACCESS_KEY` - secret key value for this app that you must get at the aws console IAM Security credentials
 
 and variables
 `AWS_REGION` - the region where athe app will be deployed at
 `AWS_S3_BUCKET_NAME` - bucket name to deploy frontend. (Must be the same as 'frontendBucketName' in infra/cdk/lib/const.ts) 
-`API_URL` - url of the api (Must same as 'subDomainNameApi' in infra/cdk/lib/const.ts)
+`REACT_APP_API_URL` - url of the api (Must be 'https://..... subdomain like 'subDomainNameApi' in infra/cdk/lib/const.ts)
 `LAMBDA_MAIN_ARN` - arn of the main lambda function.
 
 Now you can deploy by merging to github master leveraging github actions workflows

@@ -273,5 +273,8 @@ export class MyStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'tableGuidebook', {
       value: guidebookTable.table.tableName,
     });
+    new cdk.CfnOutput(this, 'apiKeyId', {
+      value: apiGatewayKey.keyId,
+    });
   }
 }

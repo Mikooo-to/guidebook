@@ -10,7 +10,6 @@ import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 
 import { Construct } from 'constructs';
 import {
-  API_KEY,
   domainName,
   frontendBucketName,
   LAMBDAS,
@@ -31,14 +30,15 @@ export class MyStack extends cdk.Stack {
       userName: userDeploerName,
     });
 
-    // Create a secret for the API key
-    const appSecrets = new secretsmanager.Secret(this, 'GuidebookApiKey', {
+    // Create a secret. Used before to store API key - now it is not needed (rely on api gateway key)
+    // Leave as example how to store any other secrets as json when needed.
+    const appSecrets = new secretsmanager.Secret(this, 'SomeSecretExample', {
       secretName: 'sectrestsForGuidebook',
       description: 'Secrets for Guidebook API v2',
       generateSecretString: {
         secretStringTemplate: JSON.stringify({}),
         passwordLength: 40,
-        generateStringKey: API_KEY,
+        generateStringKey: 'someSecretStoringExample',
         excludePunctuation: true,
         includeSpace: false,
       },
@@ -77,8 +77,7 @@ export class MyStack extends cdk.Stack {
      *  BACKEND
      */
 
-    // Use the default VPC
-    // not needed for now
+    // // Use the default VPC - not needed for now. Leave as exaple how to get default VPC
     // const vpc = ec2.Vpc.fromLookup(this, 'VPC', {
     //   isDefault: true,
     // });
@@ -165,8 +164,7 @@ export class MyStack extends cdk.Stack {
       this,
       'GuidebookApiGatewayKey',
       {
-        apiKeyName: 'guidebook-api-key',
-        value: appSecrets.secretValue.toJSON()[API_KEY],
+        apiKeyName: 'guidebook-apigateway-key',
       },
     );
 

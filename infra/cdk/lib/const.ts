@@ -7,7 +7,6 @@ export const domainName = 'lublin.life';
 export const subDomainNameFrontend = 'ukr.lublin.life';
 export const subDomainNameApi = 'api.ukr.lublin.life';
 export const websiteIndexDocument = 'index.html';
-export const API_KEY = 'API_KEY';
 
 export const LAMBDAS: Record<
   'api' | 'layerNodeModules',

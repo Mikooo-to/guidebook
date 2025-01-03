@@ -20,7 +20,7 @@ import {
 } from '@aws-sdk/client-secrets-manager';
 
 /**
- * raw dynamodb access
+ * raw dynamodb access - jsut simple test
  */
 // const client = new DynamoDBClient({});
 // const dynamo = DynamoDBDocumentClient.from(client);
@@ -61,22 +61,24 @@ const secretsManager = new SecretsManagerClient({
   region: process.env.AWS_REGION,
 });
 
-const validateApiKey = async (providedApiKey: string): Promise<boolean> => {
-  if (process.env.NODE_ENV === 'local') {
-    return providedApiKey === process.env.API_KEY;
-  }
-  try {
-    const command = new GetSecretValueCommand({
-      SecretId: process.env.API_KEY_SECRET_ARN,
-    });
-    const response = await secretsManager.send(command);
-    const storedApiKey = response.SecretString;
-    return providedApiKey === storedApiKey;
-  } catch (error) {
-    console.error('Error validating API key:', error);
-    return false;
-  }
-};
+// // Not needed anymore - rely on apigateway key - left as example of accessing secrets
+// 
+// const validateApiKey = async (providedApiKey: string): Promise<boolean> => {
+//   if (process.env.NODE_ENV === 'local') {
+//     return providedApiKey === process.env.API_KEY;
+//   }
+//   try {
+//     const command = new GetSecretValueCommand({
+//       SecretId: process.env.API_KEY_SECRET_ARN,
+//     });
+//     const response = await secretsManager.send(command);
+//     const storedApiKey = response.SecretString;
+//     return providedApiKey === storedApiKey;
+//   } catch (error) {
+//     console.error('Error validating API key:', error);
+//     return false;
+//   }
+// };
 
 const api = createAPI();
 
@@ -98,13 +100,15 @@ export const mainHandler = async (
   context: Context,
 ): Promise<APIGatewayProxyResult> => {
   debugger;
-  const apiKey = event.headers['x-api-key'] || event.headers['X-Api-Key'];
-  if (!apiKey || !(await validateApiKey(apiKey))) {
-    return {
-      statusCode: 401,
-      body: JSON.stringify({ message: 'Invalid API key' }),
-    };
-  }
+  // // Not needed anymore - rely on apigateway key
+  //
+  // const apiKey = event.headers['x-api-key'] || event.headers['X-Api-Key'];
+  // if (!apiKey || !(await validateApiKey(apiKey))) {
+  //   return {
+  //     statusCode: 401,
+  //     body: JSON.stringify({ message: 'Invalid API key' }),
+  //   };
+  // }
   console.log('-----------EVENT-----------');
   console.log(event);
   console.log('=========END EVENT=========');

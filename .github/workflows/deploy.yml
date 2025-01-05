@@ -30,6 +30,10 @@ jobs:
         run: echo 'No frontend changes found. Skip frontend build and deployment.'
 
       - if: ${{ steps.cache-frontend.outputs.cache-hit != 'true' }}
+        env: 
+          REACT_APP_API_URL: ${{secrets.REACT_APP_API_URL}}
+          REACT_APP_APIGATEWAY_KEYL: ${{secrets.REACT_APP_APIGATEWAY_KEY}}
+
         name: Build
         run: |
           cd frontend

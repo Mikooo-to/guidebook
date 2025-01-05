@@ -151,7 +151,11 @@ export class MyStack extends cdk.Stack {
       proxy: true,
       endpointTypes: [apigateway.EndpointType.REGIONAL],
       defaultCorsPreflightOptions: {
-        allowOrigins: apigateway.Cors.ALL_ORIGINS,
+        allowOrigins: [
+          'http://ukr.lublin.life',
+          'https://ukr.lublin.life',
+          'http://localhost:3000',
+        ],
         allowMethods: apigateway.Cors.ALL_METHODS,
         allowHeaders: [
           'Content-Type',

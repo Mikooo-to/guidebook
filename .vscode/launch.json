@@ -1,36 +1,26 @@
 {
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
     {
-      // "preLaunchTask": "invoke-lambda",
+      "name": "Attach to SAM Local",
       "type": "node",
       "request": "attach",
-      "name": "Debug Lambda Function if started in docker",
       "address": "localhost",
       "port": 9229,
       "localRoot": "${workspaceFolder}/api/lambdas/src/lambda-api",
       "remoteRoot": "/var/task",
-      "autoAttachChildProcesses": true,
-      "sourceMaps": true,
-      "trace": true,
-      "outFiles": [
-        "${workspaceFolder}/api/lambdas/build/lambda-api"
-      ],
-      "sourceMapPathOverrides": {
-        "/var/task/": "${workspaceFolder}/api/lambdas/build/lambda-api"
-      }
+      "protocol": "inspector",
+      "stopOnEntry": false
     },
     {
-      "name": "SAM API",
-      "type": "node",
-      "request": "attach",
-      "address": "localhost",
-      "port": 5858,
-      "localRoot": "${workspaceFolder}/api/lambdas/src/lambda-api",
-      "remoteRoot": "/var/task",
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome against localhost",
+      "url": "http://localhost:3001",
+      "webRoot": "${workspaceFolder}"
     }
   ]
 }

@@ -1,9 +1,8 @@
 {
-  "name": "guidebook-api",
+  "name": "zeroblog-api",
   "version": "0.1.1",
   "scripts": {
-    "layer": "rimraf build_lambda_layer && mkdir -p build_lambda_layer/nodejs/node20 && ln -sf ../../../node_modules build_lambda_layer/nodejs/node20/ && cd build_lambda_layer && zip -r layer.zip nodejs -x \"*/.*\" && cd ..",
-    "copy-sql": "copyfiles -u 1 src/**/*.sql build",
+    "build:layer": "rimraf build_lambda_layer && mkdir -p build_lambda_layer/nodejs/node20 && ln -sf ../../../node_modules build_lambda_layer/nodejs/node20/ && cd build_lambda_layer && zip -qr layer.zip nodejs -x \"*/.*\" && cd ..",
     "rebuild": "rimraf build && tsc && docker compose -f ../../docker-local/docker-compose.yml restart api",
     "build": "rimraf build && tsc",
     "watch": "tsc -w",
@@ -29,6 +28,8 @@
     "@typedorm/core": "^1.15.4",
     "@typedorm/document-client": "^1.15.4",
     "aws-lambda": "^1.0.7",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "lambda-api": "^1.1.0",
     "source-map-support": "^0.5.21"
   }

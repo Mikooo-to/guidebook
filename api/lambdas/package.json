@@ -1,6 +1,6 @@
 {
   "name": "zeroblog-api",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "scripts": {
     "build:layer": "rimraf build_lambda_layer && mkdir -p build_lambda_layer/nodejs/node20 && ln -sf ../../../node_modules build_lambda_layer/nodejs/node20/ && cd build_lambda_layer && zip -qr layer.zip nodejs -x \"*/.*\" && cd ..",
     "rebuild": "rimraf build && tsc && docker compose -f ../../docker-local/docker-compose.yml restart api",

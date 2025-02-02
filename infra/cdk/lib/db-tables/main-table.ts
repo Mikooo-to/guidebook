@@ -1,10 +1,14 @@
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
+import { projectName } from '../const';
 
-export class GuidebookDynamoDbTable extends Construct {
+export class MainDynamoDbTable extends Construct {
   public table: dynamodb.Table;
-  constructor(scope: Construct, public resourceId = 'guidebook-table') {
+  constructor(
+    scope: Construct,
+    public resourceId = `${projectName}-main-table`,
+  ) {
     super(scope, resourceId);
 
     this.table = new dynamodb.Table(this, resourceId, {

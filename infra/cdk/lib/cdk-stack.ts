@@ -1,5 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
@@ -10,8 +11,8 @@ import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 
 import { Construct } from 'constructs';
 import {
+  allowOrigins,
   domainName,
-  frontendBucketName,
   LAMBDAS,
   projectName,
   subDomainNameApi,
@@ -19,7 +20,7 @@ import {
   userDeploerName,
   websiteIndexDocument,
 } from './const';
-import { GuidebookDynamoDbTable } from './db-tables/guidebook-table';
+import { MainDynamoDbTable } from './db-tables/main-table';
 
 export class MyStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -33,8 +34,8 @@ export class MyStack extends cdk.Stack {
     // Create a secret. Used before to store API key - now it is not needed (rely on api gateway key)
     // Leave as example how to store any other secrets as json when needed.
     const appSecrets = new secretsmanager.Secret(this, 'SomeSecretExample', {
-      secretName: 'sectrestsForGuidebook',
-      description: 'Secrets for Guidebook API v2',
+      secretName: `${projectName}Sectrests`,
+      description: `Secrets for ${projectName}`,
       generateSecretString: {
         secretStringTemplate: JSON.stringify({}),
         passwordLength: 40,
@@ -49,18 +50,28 @@ export class MyStack extends cdk.Stack {
      */
 
     // Bucket for storing frontend code
-    const bucketForFrontend = new s3.Bucket(this, frontendBucketName, {
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      bucketName: subDomainNameFrontend,
-      autoDeleteObjects: true,
-      blockPublicAccess: {
-        blockPublicAcls: false,
-        blockPublicPolicy: false,
-        ignorePublicAcls: false,
-        restrictPublicBuckets: false,
+    const bucketForFrontend = new s3.Bucket(
+      this,
+      `${projectName}FrontendBucket`,
+      {
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+        bucketName: subDomainNameFrontend,
+        autoDeleteObjects: true,
+        blockPublicAccess: {
+          blockPublicAcls: false,
+          blockPublicPolicy: false,
+          ignorePublicAcls: false,
+          restrictPublicBuckets: false,
+        },
+        cors: [{ allowedMethods: [s3.HttpMethods.GET], allowedOrigins: ['*'] }],
+        websiteIndexDocument: websiteIndexDocument,
       },
-      cors: [{ allowedMethods: [s3.HttpMethods.GET], allowedOrigins: ['*'] }],
-      websiteIndexDocument: websiteIndexDocument,
+    );
+
+    new s3deploy.BucketDeployment(this, `${projectName}FrontendDeployment`, {
+      sources: [s3deploy.Source.asset('../../frontend/build')],
+      destinationBucket: bucketForFrontend,
+      prune: true,
     });
 
     bucketForFrontend.addToResourcePolicy(
@@ -77,13 +88,8 @@ export class MyStack extends cdk.Stack {
      *  BACKEND
      */
 
-    // // Use the default VPC - not needed for now. Leave as exaple how to get default VPC
-    // const vpc = ec2.Vpc.fromLookup(this, 'VPC', {
-    //   isDefault: true,
-    // });
-
     // Database
-    const guidebookTable = new GuidebookDynamoDbTable(this);
+    const mainTable = new MainDynamoDbTable(this);
 
     // Lambda functions
     const lambdaCommonRole = new iam.Role(this, `${projectName}-lambdarole`, {
@@ -130,32 +136,39 @@ export class MyStack extends cdk.Stack {
       compatibleRuntimes: [lambda.Runtime.NODEJS_20_X], // Adjust for your Node.js version
       description: 'Node modules layer',
     });
+    const layerArnParts = cdk.Fn.split(':', nodeModulesLayer.layerVersionArn);
+    const layerArnWithoutVersion = cdk.Fn.join(':', [
+      cdk.Fn.select(0, layerArnParts), // arn
+      cdk.Fn.select(1, layerArnParts), // aws
+      cdk.Fn.select(2, layerArnParts), // lambda
+      cdk.Fn.select(3, layerArnParts), // region
+      cdk.Fn.select(4, layerArnParts), // account
+      cdk.Fn.select(5, layerArnParts), // layer
+      cdk.Fn.select(6, layerArnParts), // layer-name
+    ]);
 
     // Lambda functions - main api
     const lambdaFnApi = new lambda.Function(this, `lambdaFnApi`, {
+      functionName: `${projectName}-main-api-lambda`,
       code: lambda.AssetCode.fromAsset(LAMBDAS.api.path),
       layers: [nodeModulesLayer],
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: LAMBDAS.api.handler,
       role: lambdaCommonRole,
       environment: {
-        GUIDEBOOK_TABLE_NAME: guidebookTable.table.tableName,
+        MAIN_TABLE_NAME: mainTable.table.tableName,
         SECRETS_ARN: appSecrets.secretArn,
       },
     });
 
     // ApiGateway
 
-    const api = new apigateway.LambdaRestApi(this, 'guidebook-main-api', {
+    const api = new apigateway.LambdaRestApi(this, `${projectName}-main-api`, {
       handler: lambdaFnApi,
       proxy: true,
       endpointTypes: [apigateway.EndpointType.REGIONAL],
       defaultCorsPreflightOptions: {
-        allowOrigins: [
-          'http://ukr.lublin.life',
-          'https://ukr.lublin.life',
-          'http://localhost:3000',
-        ],
+        allowOrigins,
         allowMethods: apigateway.Cors.ALL_METHODS,
         allowHeaders: [
           'Content-Type',
@@ -178,16 +191,20 @@ export class MyStack extends cdk.Stack {
     // Create API key for API Gateway
     const apiGatewayKey = new apigateway.ApiKey(
       this,
-      'GuidebookApiGatewayKey',
+      `${projectName}ApiGatewayKey`,
       {
-        apiKeyName: 'guidebook-apigateway-key',
+        apiKeyName: `${projectName}-apigateway-key`,
       },
     );
 
     // Create a usage plan
-    const usagePlan = new apigateway.UsagePlan(this, 'GuidebookUsagePlan', {
-      name: 'guidebook-usage-plan',
-    });
+    const usagePlan = new apigateway.UsagePlan(
+      this,
+      `${projectName}UsagePlan`,
+      {
+        name: `${projectName}-usage-plan`,
+      },
+    );
 
     // Add the API stage to the usage plan
     usagePlan.addApiStage({
@@ -216,18 +233,33 @@ export class MyStack extends cdk.Stack {
             effect: iam.Effect.ALLOW,
             resources: [lambdaFnApi.functionArn],
           }),
+          new iam.PolicyStatement({
+            actions: ['lambda:UpdateFunctionConfiguration'],
+            effect: iam.Effect.ALLOW,
+            resources: [lambdaFnApi.functionArn],
+          }),
+          new iam.PolicyStatement({
+            actions: ['lambda:GetLayerVersion'],
+            effect: iam.Effect.ALLOW,
+            resources: [`${layerArnWithoutVersion}:*`],
+          }),
+          new iam.PolicyStatement({
+            actions: ['lambda:PublishLayerVersion'],
+            effect: iam.Effect.ALLOW,
+            resources: [layerArnWithoutVersion],
+          }),
         ],
       }),
     );
 
-    guidebookTable.table.grantFullAccess(lambdaFnApi);
+    mainTable.table.grantFullAccess(lambdaFnApi);
 
     /**
      *  HOSTING
      */
 
     //Lookup the zone based on domain name
-    const zone = route53.HostedZone.fromLookup(this, 'lublinlifeZone', {
+    const zone = route53.HostedZone.fromLookup(this, `${projectName}Zone`, {
       domainName: domainName,
     });
 
@@ -253,16 +285,20 @@ export class MyStack extends cdk.Stack {
     });
 
     //Add frontend subdomain to Route53
-    const cNameFront = new route53.ARecord(this, 'ukrLublinlifeSubdomain', {
-      zone: zone,
-      recordName: subDomainNameFrontend,
-      target: route53.RecordTarget.fromAlias(
-        new targets.BucketWebsiteTarget(bucketForFrontend),
-      ),
-    });
+    const cNameFront = new route53.ARecord(
+      this,
+      `${projectName}FrontendDomain`,
+      {
+        zone: zone,
+        recordName: subDomainNameFrontend,
+        target: route53.RecordTarget.fromAlias(
+          new targets.BucketWebsiteTarget(bucketForFrontend),
+        ),
+      },
+    );
 
     //Add api subdomain to Route53
-    const cNameApi = new route53.ARecord(this, 'apiUkrLublinlifeSubdomain', {
+    const cNameApi = new route53.ARecord(this, `${projectName}ApiDomain`, {
       zone: zone,
       recordName: subDomainNameApi,
       target: route53.RecordTarget.fromAlias(
@@ -274,22 +310,28 @@ export class MyStack extends cdk.Stack {
      *  Output
      */
 
-    new cdk.CfnOutput(this, 'Bucket Url', {
+    new cdk.CfnOutput(this, 'BucketUrl', {
       value: bucketForFrontend.bucketWebsiteUrl,
     });
-    new cdk.CfnOutput(this, 'Bucket Name For Frontend', {
+    new cdk.CfnOutput(this, 'BucketNameForFrontend', {
       value: bucketForFrontend.bucketName,
     });
-    new cdk.CfnOutput(this, 'lambdaFnApi Arn', {
+    new cdk.CfnOutput(this, 'LambdaFnApiArn', {
       value: lambdaFnApi.functionArn,
     });
-    new cdk.CfnOutput(this, 'User deployer Name', {
+
+    console.log(layerArnWithoutVersion);
+    new cdk.CfnOutput(this, 'LambdaLayerArn', {
+      value: layerArnWithoutVersion,
+    });
+
+    new cdk.CfnOutput(this, 'UserDeployerName', {
       value: userDeploer.userName,
     });
-    new cdk.CfnOutput(this, 'tableGuidebook', {
-      value: guidebookTable.table.tableName,
+    new cdk.CfnOutput(this, 'MainTableName', {
+      value: mainTable.table.tableName,
     });
-    new cdk.CfnOutput(this, 'apiKeyId', {
+    new cdk.CfnOutput(this, 'ApiKeyId', {
       value: apiGatewayKey.keyId,
     });
   }

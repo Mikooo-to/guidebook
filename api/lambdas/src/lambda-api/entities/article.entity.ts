@@ -14,11 +14,11 @@ import {
   },
   indexes: {
     LSI1: {
-      sortKey: 'ARTICLE#USER#{{user}}',
+      sortKey: 'ARTICLE#USER#{{userId}}',
       type: INDEX_TYPE.LSI,
     },
     LSI2: {
-      sortKey: 'ARTICLE#SECTION#{{section}}',
+      sortKey: 'ARTICLE#SECTION#{{sectionId}}',
       type: INDEX_TYPE.LSI,
     },
   },
@@ -33,10 +33,10 @@ export class Article {
   name: string;
 
   @Attribute()
-  user?: string;
+  userId?: string;
 
   @Attribute()
-  section: string;
+  sectionId: string;
 
   @Attribute()
   content: string;

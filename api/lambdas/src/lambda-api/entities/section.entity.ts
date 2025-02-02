@@ -3,7 +3,6 @@ import {
   AUTO_GENERATE_ATTRIBUTE_STRATEGY,
   AutoGenerateAttribute,
   Entity,
-  INDEX_TYPE,
 } from '@typedorm/common';
 
 @Entity({
@@ -12,12 +11,6 @@ import {
     partitionKey: 'SECTION',
     sortKey: 'SECTION#ID#{{id}}',
   },
-  indexes: {
-    LSI1: {
-      sortKey: 'SECTION#NAME#{{name}}',
-      type: INDEX_TYPE.LSI,
-    },
-  },
 })
 export class Section {
   @AutoGenerateAttribute({
@@ -25,6 +18,10 @@ export class Section {
   })
   id: string;
 
+  /**
+   * In TypeDORM, when you mark an attribute as unique: true, it automatically creates an additional record in DynamoDB to maintain uniqueness constraints. This is because DynamoDB doesn't have built-in unique constraints like traditional SQL databases.
+   * This additional record serves as a unique index to ensure that no two sections can have the same name. The format DRM_GEN_SECTION.NAME#sectionN2 is TypeDORM's internal way of maintaining these unique constraints.
+   */
   @Attribute({ unique: true })
   name: string;
 

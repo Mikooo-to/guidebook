@@ -8,7 +8,7 @@ docker compose up db -d
 ```
 
 Yet, if the structure or name has changed, you need to (re-)create table in the local dynamodb using UI at http://localhost:8001/
-use data from guidebook-table.ts to get necessary params of the data table
+use data from api/lambdas/src/lambda-api/db/tables.ts to get necessary params of the data table
 
 
 # API - you can start api eather using docker compose(see below) or start api using sam (see ../sam-local/README.MD - prefferable way)

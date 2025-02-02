@@ -1,21 +1,21 @@
-import { TArticle } from '../types/Article';
+import { TSection } from '../types/Section';
 import { BaseService } from './baseService';
 
-export class ArticlesService extends BaseService<TArticle> {
+export class SectionsService extends BaseService<TSection> {
   get = async () => {
-    const response = await fetch(`${this.apiUrl}/articles`, {
+    const response = await fetch(`${this.apiUrl}/sections`, {
       ...this.init,
       method: 'GET',
     });
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
     }
-    const json = (await response.json()).items as TArticle[];
+    const json = (await response.json()).items as TSection[];
     return json;
   };
 
-  post = async (data: TArticle) => {
-    const response = await fetch(`${this.apiUrl}/articles`, {
+  post = async (data: TSection) => {
+    const response = await fetch(`${this.apiUrl}/sections`, {
       ...this.init,
       method: 'POST',
       body: JSON.stringify(data),
@@ -26,11 +26,9 @@ export class ArticlesService extends BaseService<TArticle> {
     }
   };
 
-  prepare(data: Partial<TArticle>): TArticle {
-    const defaultArticleData: TArticle = {
-      sectionId: 'defaultSectionId',
-      content: 'no content',
-      name: 'no name',
+  prepare(data: Partial<TSection>): TSection {
+    const defaultArticleData: TSection = {
+      name: 'defaultSection',
       status: 'draft',
     };
     return {

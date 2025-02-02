@@ -9,7 +9,7 @@ export function P4(){
         <Box>   
             <button onClick={BackButtonHandler}>Back</button>
             <Box className="P4" style={{fontSize:"40px"}}>
-                <h1>відпочинок</h1>
+                <h1>Page4 Content</h1>
             </Box>
         </Box>
     );

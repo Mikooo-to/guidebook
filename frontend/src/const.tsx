@@ -1,18 +1,18 @@
 export const pagesPathsAndNames = [
   {
     path: '/P1',
-    linkText: 'центри гуманітарної допомоги',
+    linkText: 'Link to Page1 - Show articles (GET)',
   },
   {
     path: '/P2',
-    linkText: 'торгівельні центри та магазини',
+    linkText: 'Link to Page2 - Add articles (POST)',
   },
   {
     path: '/P3',
-    linkText: 'пам’ятки та цікавинки',
+    linkText: 'Link to Page3 - Add Sections (POST)',
   },
   {
     path: '/P4',
-    linkText: 'відпочинок',
+    linkText: 'Link to Page4',
   },
 ];

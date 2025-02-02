@@ -1,8 +1,8 @@
-export type Article = {
+export type TArticle = {
+  id?: string;
   content: string;
-  section: string;
-  updatedAt: string;
+  sectionId: string;
   status: string;
-  id: string;
   name: string;
+  updatedAt?: string;
 };

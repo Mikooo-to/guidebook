@@ -106,7 +106,7 @@ and variables
 `AWS_S3_BUCKET_NAME` - bucket name to deploy frontend. (Must be the same as 'subDomainNameFrontend' in infra/cdk/lib/const.ts) 
 `REACT_APP_API_URL` - url of the api (Must be like 'https://api.blog.for-test.click', use subDomainNameApi from infra/cdk/lib/const.ts)
 `LAMBDA_MAIN_API_ARN` - arn of the main lambda function (lambdaFnApiArn you've got from output before).
-`LAMBDA_LAYER_NAME` - arn of the main lambda function (LambdaLayerName you've got from output before)
+`LAMBDA_LAYER_ARN` - arn of the main lambda function (LambdaLayerArn you've got from output before)
 
 Now you can deploy api and frontend code by merging feature branches to the master branch leveraging github actions workflows
 

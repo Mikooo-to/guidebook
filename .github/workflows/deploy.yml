@@ -79,6 +79,7 @@ jobs:
         run: |
           cd api/lambdas
           npm ci
+          npm run build:layer
           npm run build
 
       - if: ${{ steps.cache-api.outputs.cache-hit != 'true' }}
@@ -95,4 +96,22 @@ jobs:
           cd api/lambdas/build/lambda-api/
           zip -r lambda-main-api.zip . -i '*.js'
           aws lambda update-function-code --function-name ${{vars.LAMBDA_MAIN_API_ARN}} --zip-file fileb://lambda-main-api.zip
+
+      - if: ${{ steps.cache-api.outputs.cache-hit != 'true' }}
+        name: Deploy lambda layer
+        run: |
+          cd api/lambdas/build_lambda_layer/
+          aws lambda publish-layer-version \
+            --layer-name ${{vars.LAMBDA_LAYER_ARN}} \
+            --zip-file fileb://layer.zip \
+            --compatible-runtimes nodejs20.x
+
+      - if: ${{ steps.cache-api.outputs.cache-hit != 'true' }}
+        name: Update function to use new layer
+        run: |
+          cd api/lambdas/build_lambda_layer/
+          LAYER_VERSION_ARN=$(aws lambda publish-layer-version --layer-name ${{vars.LAMBDA_LAYER_ARN}} --zip-file fileb://layer.zip --compatible-runtimes nodejs20.x --query 'LayerVersionArn' --output text)
+          aws lambda update-function-configuration \
+            --function-name ${{vars.LAMBDA_MAIN_API_ARN}} \
+            --layers $LAYER_VERSION_ARN
 

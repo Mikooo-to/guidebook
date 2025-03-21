@@ -7,7 +7,6 @@ import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as targets from 'aws-cdk-lib/aws-route53-targets';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
-import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 
 import { Construct } from 'constructs';
 import {
@@ -26,23 +25,10 @@ export class MyStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
+    cdk.Tags.of(this).add('AppManagerCFNStackKey', this.stackName);
     // user to deploy code
     const userDeploer = new iam.User(this, `${projectName}Deployer`, {
       userName: userDeploerName,
-    });
-
-    // Create a secret. Used before to store API key - now it is not needed (rely on api gateway key)
-    // Leave as example how to store any other secrets as json when needed.
-    const appSecrets = new secretsmanager.Secret(this, 'SomeSecretExample', {
-      secretName: `${projectName}Sectrests`,
-      description: `Secrets for ${projectName}`,
-      generateSecretString: {
-        secretStringTemplate: JSON.stringify({}),
-        passwordLength: 40,
-        generateStringKey: 'someSecretStoringExample',
-        excludePunctuation: true,
-        includeSpace: false,
-      },
     });
 
     /**
@@ -112,23 +98,6 @@ export class MyStack extends cdk.Stack {
         'service-role/AWSLambdaBasicExecutionRole',
       ),
     );
-    lambdaCommonRole.addManagedPolicy(
-      iam.ManagedPolicy.fromAwsManagedPolicyName(
-        'service-role/AWSLambdaVPCAccessExecutionRole',
-      ),
-    );
-    lambdaCommonRole.addManagedPolicy(
-      iam.ManagedPolicy.fromAwsManagedPolicyName(
-        'service-role/AWSLambdaVPCAccessExecutionRole',
-      ),
-    );
-    lambdaCommonRole.addToPolicy(
-      new iam.PolicyStatement({
-        effect: iam.Effect.ALLOW,
-        actions: ['secretsmanager:GetSecretValue'],
-        resources: [appSecrets.secretArn],
-      }),
-    );
 
     // Create a layer for node_modules
     const nodeModulesLayer = new lambda.LayerVersion(this, 'NodeModulesLayer', {
@@ -155,9 +124,9 @@ export class MyStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: LAMBDAS.api.handler,
       role: lambdaCommonRole,
+      memorySize: 512,
       environment: {
         MAIN_TABLE_NAME: mainTable.table.tableName,
-        SECRETS_ARN: appSecrets.secretArn,
       },
     });
 

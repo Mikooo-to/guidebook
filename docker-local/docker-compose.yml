@@ -5,25 +5,26 @@ networks:
     driver: bridge
 
 services:
-  api: 
-    container_name: ${COMPOSE_PROJECT_NAME}_api
-    build:
-      context: ..
-      dockerfile: docker-local/api/Dockerfile
-    environment:
-      - NODE_OPTIONS=--inspect=0.0.0.0:9229
-      - AWS_ACCESS_KEY_ID=DUMMYIDEXAMPLE
-      - AWS_SECRET_ACCESS_KEY=DUMMYIDEXAMPLE
-      - API_KEY=DUMMYIDEXAMPLE
-      - AWS_REGION=localhost
-      - NODE_ENV=local
-      - MAIN_TABLE_NAME=maintableD4A14560
-      - DYNAMODB_ENDPOINT=http://db:8000    
-    ports:
-      - ${DOCKER_API_PORT}:8080
-      - "9229:9229"
-    volumes:
-      - "../api/lambdas/build/lambda-api/:/var/task"
+  ### use sam-local instead.  
+  # api: 
+  #   container_name: ${COMPOSE_PROJECT_NAME}_api
+  #   build:
+  #     context: ..
+  #     dockerfile: docker-local/api/Dockerfile
+  #   environment:
+  #     - NODE_OPTIONS=--inspect=0.0.0.0:9229
+  #     - AWS_ACCESS_KEY_ID=DUMMYIDEXAMPLE
+  #     - AWS_SECRET_ACCESS_KEY=DUMMYIDEXAMPLE
+  #     - API_KEY=DUMMYIDEXAMPLE
+  #     - AWS_REGION=localhost
+  #     - NODE_ENV=local
+  #     - MAIN_TABLE_NAME=maintableD4A14560
+  #     - DYNAMODB_ENDPOINT=http://db:8000    
+  #   ports:
+  #     - ${DOCKER_API_PORT}:8080
+  #     - "9229:9229"
+  #   volumes:
+  #     - "../api/lambdas/build/lambda-api/:/var/task"
   
   db:
     container_name: ${COMPOSE_PROJECT_NAME}_db

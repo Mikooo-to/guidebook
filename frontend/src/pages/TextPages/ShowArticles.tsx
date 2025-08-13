@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArticlesService } from '../../services/articlesService';
 import { useEffect, useState } from 'react';
 import { TArticle } from '../../types/Article';
-export function P1() {
+export function ShowArticlesPage() {
   const [articles, setArticles] = useState<TArticle[]>([]);
   const redir = useNavigate();
   function BackButtonHandler() {

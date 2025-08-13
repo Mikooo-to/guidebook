@@ -76,46 +76,12 @@ const articlesController = new ArticlesController(
   }
 );
 
-/**
- * Articles
- */
-
-// api.post('/articles', async (req: Request, res: Response) => {
-//   const { content, name, section, status } = req.body;
-//   const article = new Article();
-//   Object.assign(article, { content, name, section, status });
-//   const result = await dbConnection.entityManager.create(article);
-//   res.status(201).send(result);
-// });
-
-// api.get('/articles', async (req: Request, res: Response) => {
-//   const result = await dbConnection.entityManager.find(Article, {});
-//   res.status(200).send(result);
-// });
-
-/**
- * Sections
- */
-
-// api.post('/sections', async (req: Request, res: Response) => {
-//   const { name, status } = req.body;
-//   const article = new Section();
-//   Object.assign(article, { name, status });
-//   const result = await dbConnection.entityManager.create(article);
-//   res.status(201).send(result);
-// });
-
-// api.get('/sections', async (req: Request, res: Response) => {
-//   const result = await dbConnection.entityManager.find(Section, {});
-//   res.status(200).send(result);
-// });
-
 export const mainHandler = async (
   event: APIGatewayProxyEvent,
   context: Context,
 ): Promise<APIGatewayProxyResult> => {
-  console.log('-----------EVENT-----------');
-  console.log(event);
-  console.log('=========END EVENT=========');
+  // console.log('-----------EVENT-----------');
+  // console.log(event);
+  // console.log('=========END EVENT=========');
   return await api.run(event, context);
 };

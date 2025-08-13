@@ -32,8 +32,8 @@ Resources:
           API_KEY: DUMMYIDEXAMPLE
           AWS_REGION: localhost
           NODE_ENV: local
-          GUIDEBOOK_TABLE_NAME: guidebooktableD4A14560
-          DYNAMODB_ENDPOINT: http://gb_db:8000          
+          MAIN_TABLE_NAME: maintableD4A14560
+          DYNAMODB_ENDPOINT: http://db:8000
       Layers:
             - !Ref MyLayer    # Reference to the layer
       Events:

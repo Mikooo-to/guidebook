@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArticlesService } from '../../services/articlesService';
 import { TSection } from '../../types/Section';
 import { SectionsService } from '../../services/sectionsService';
-export function P2() {
+export function AddArticlesPage() {
   const redir = useNavigate();
   function BackButtonHandler() {
     redir(-1);

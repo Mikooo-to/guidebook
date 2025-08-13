@@ -10,8 +10,12 @@ export class ArticlesService extends BaseService<TArticle> {
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
     }
-    const json = (await response.json()).items as TArticle[];
-    return json;
+    const res = await response.json();
+    if (!res.items) {
+      console.error('[res]', res);
+      throw new Error('No items in response');
+    }
+    return res.items as TArticle[];
   };
 
   post = async (data: TArticle) => {
@@ -31,7 +35,7 @@ export class ArticlesService extends BaseService<TArticle> {
       sectionId: 'defaultSectionId',
       content: 'no content',
       name: 'no name',
-      status: 'draft',
+      status: 'ready',
     };
     return {
       ...defaultArticleData,

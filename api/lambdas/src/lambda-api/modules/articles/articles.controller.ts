@@ -32,8 +32,17 @@ export class ArticlesController extends BaseController {
     });
 
     api.get(`${path}`, async (req: Request, res: Response) => {
-      const articles = await articlesService.findAll();
-      res.status(200).send(articles);
+      try {
+        const articles = await articlesService.findAll();
+        res.status(200).send(articles);
+      } catch (error: any) {
+        console.log(error);
+        res.status(500).json({
+          message: 'Internal server error',
+          errors: error,
+        });
+        throw error;
+      }
     });
 
     super(api, dbConnection);

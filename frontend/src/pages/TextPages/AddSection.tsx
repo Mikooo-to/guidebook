@@ -2,7 +2,7 @@ import { Box, Button, Input } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SectionsService } from '../../services/sectionsService';
-export function P3() {
+export function AddSectionPage() {
   const redir = useNavigate();
   function BackButtonHandler() {
     redir(-1);

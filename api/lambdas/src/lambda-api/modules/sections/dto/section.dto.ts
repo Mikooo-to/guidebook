@@ -5,7 +5,7 @@ import { Section } from '../../../entities/section.entity';
 export class CreateSectionDto implements Partial<Section> {
   @Expose()
   @IsString()
-  @MinLength(1)
+  @MinLength(4)
   name: string;
 
   @Expose()

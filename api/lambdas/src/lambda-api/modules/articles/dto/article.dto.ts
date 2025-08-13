@@ -15,7 +15,7 @@ export class CreateArticleDto implements Partial<Article> {
 
   @Expose()
   @IsString()
-  @MinLength(1)
+  @MinLength(4)
   content: string;
 
   @Expose()

@@ -2,33 +2,25 @@ import { Request, Response } from 'lambda-api';
 import { BaseController } from '../baseController';
 import { TControllerParams } from '../controllerParams.type';
 import { ArticlesService } from './articles.service';
-import { instanceToPlain, plainToInstance } from 'class-transformer';
+import { instanceToPlain } from 'class-transformer';
 import { CreateArticleDto } from './dto/article.dto';
-import { validateOrReject } from 'class-validator';
+import { validateOrRejectRequest } from '../../shared/validation-tools';
 
 export class ArticlesController extends BaseController {
   constructor({ api, dbConnection, path }: TControllerParams) {
     const articlesService = new ArticlesService(dbConnection);
 
     api.post(`${path}`, async (req: Request, res: Response) => {
-      try {
-        const articleDto = plainToInstance(CreateArticleDto, req.body, {
-          excludeExtraneousValues: true,
-          strategy: 'excludeAll',
-        });
-        await validateOrReject(articleDto, {
-          whitelist: true,
-        });
+      const articleDto = await validateOrRejectRequest<CreateArticleDto>(
+        req,
+        res,
+        CreateArticleDto,
+      );
+      if (!articleDto) return;
 
-        const article = await articlesService.create(articleDto);
+      const article = await articlesService.create(articleDto);
 
-        res.status(201).send(instanceToPlain(article));
-      } catch (error) {
-        res.status(400).json({
-          message: 'Validation failed',
-          errors: error,
-        });
-      }
+      res.status(201).send(instanceToPlain(article));
     });
 
     api.get(`${path}`, async (req: Request, res: Response) => {
@@ -41,7 +33,6 @@ export class ArticlesController extends BaseController {
           message: 'Internal server error',
           errors: error,
         });
-        throw error;
       }
     });
 

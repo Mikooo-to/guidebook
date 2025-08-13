@@ -1,4 +1,5 @@
 import { Section } from '../../entities/section.entity';
+import { TListResponce } from '../articles/articles.service';
 import { BaseService } from '../baseService';
 import { CreateSectionDto } from './dto/section.dto';
 
@@ -11,11 +12,11 @@ export class SectionsService extends BaseService {
     return result;
   }
 
-  async findAll(): Promise<Section[]> {
-    const { items } = await this.dbConnection.entityManager.find<Section>(
+  async findAll(): Promise<TListResponce<Section>> {
+    const res = await this.dbConnection.entityManager.find<Section>(
       Section,
       {},
     );
-    return items;
+    return res;
   }
 }

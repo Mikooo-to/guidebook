@@ -28,7 +28,7 @@ const App = () => {
   const rendredPages = (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/home" element={<HomePage />} />
         <Route
           path={pagesPathsAndNames[0].path}

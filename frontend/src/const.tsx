@@ -15,4 +15,8 @@ export const pagesPathsAndNames = [
     path: '/P4',
     linkText: 'Link to Page4',
   },
+  {
+    path: '/login',
+    linkText: '',
+  },
 ];

@@ -17,7 +17,7 @@ export function ShowArticlesPage() {
 
   return (
     <Box>
-      <button onClick={BackButtonHandler}>Backckckckckck</button>
+      <button onClick={BackButtonHandler}>Back</button>
       <Box className="P1" style={{ fontSize: '40px' }}>
         <h1>Page1 content</h1>
         {articles.map((article) => (

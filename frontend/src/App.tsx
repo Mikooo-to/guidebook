@@ -1,6 +1,7 @@
 import { ShowArticlesPage } from './pages/TextPages/ShowArticles';
 import { AddArticlesPage } from './pages/TextPages/AddArticle';
 import { AddSectionPage } from './pages/TextPages/AddSection';
+import { Login } from './pages/LoginPage/Login';
 import { P4 } from './pages/TextPages/P4';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
@@ -38,6 +39,7 @@ const App = () => {
         />
         <Route path={pagesPathsAndNames[2].path} element={<AddSectionPage />} />
         <Route path={pagesPathsAndNames[3].path} element={<P4 />} />
+        <Route path={pagesPathsAndNames[4].path} element={<Login />} />
       </Routes>
     </Router>
   );

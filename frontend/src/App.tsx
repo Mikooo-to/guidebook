@@ -3,7 +3,7 @@ import { AddArticlesPage } from './pages/TextPages/AddArticle';
 import { AddSectionPage } from './pages/TextPages/AddSection';
 import { Login } from './pages/LoginPage/Login';
 import { P4 } from './pages/TextPages/P4';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
 import { HomePage } from './pages/HomePage/HomePage';
 import { Box, useMediaQuery } from '@mui/material';
@@ -28,7 +28,8 @@ const App = () => {
   const rendredPages = (
     <Router>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<Login />} />
+        <Route path="/home" element={<HomePage />} />
         <Route
           path={pagesPathsAndNames[0].path}
           element={<ShowArticlesPage />}

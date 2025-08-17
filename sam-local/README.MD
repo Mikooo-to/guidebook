@@ -6,7 +6,7 @@ first, make sure dynamodb service is up and running (`docker ps` should contatin
 ## Using sam local start-api - Since template has an API event, this command would be more appropriate as it starts a local API Gateway endpoint:
 
 Before running either command, make sure to:
-Build your application first:
+Bsam local start-api --docker-network gb_default --warm-containers EAGERuild your application first:
 ```bash
 sam build
 ```

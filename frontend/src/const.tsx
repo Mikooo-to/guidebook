@@ -17,6 +17,6 @@ export const pagesPathsAndNames = [
   },
   {
     path: '/login',
-    linkText: 'Link to Login',
+    linkText: 'Log In',
   },
 ];

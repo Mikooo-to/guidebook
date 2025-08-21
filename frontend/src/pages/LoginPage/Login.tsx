@@ -1,7 +1,8 @@
 let loggedIn = false;
-import { Box, TextField, Button } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { TokenService } from "../../services/tokenService";
 export { loggedIn };
 export function Login() {
     const redir = useNavigate();
@@ -85,6 +86,7 @@ export async function tryTokenLogin() {
         loggedIn = true;
         return true;
     }else{
+        localStorage.removeItem('token');
         return false;
     }
 }

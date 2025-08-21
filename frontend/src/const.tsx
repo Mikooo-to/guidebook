@@ -11,10 +11,10 @@ export const pagesPathsAndNames = [
     path: '/add-section',
     linkText: 'Link to Page3 - Add Sections (POST)',
   },
-  {
+/*  {
     path: '/P4',
     linkText: 'Link to Page4',
-  },
+  },*/
   {
     path: '/login',
     linkText: 'Log In',

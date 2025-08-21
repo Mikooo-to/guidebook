@@ -10,6 +10,7 @@ import { Box, useMediaQuery } from '@mui/material';
 import { pagesPathsAndNames } from './const';
 import { PhoneLayout } from './layouts/PhoneLayout/PhoneLayout';
 import { DesktopLayout } from './layouts/DesktopLayout/DesktopLayout';
+import { tryTokenLogin } from './pages/LoginPage/Login';
 
 const App = () => {
   const isDesktopOrLaptop = useMediaQuery('(min-width: 1224px)');
@@ -17,7 +18,7 @@ const App = () => {
   // const isBigScreen = useMediaQuery('(min-width: 1824px)');
   // const isPortrait = useMediaQuery('(orientation: portrait)');
   // const isRetina = useMediaQuery('(min-resolution: 2dppx)');
-
+ 
   const header = (
     <Box>
       header <br />
@@ -39,8 +40,7 @@ const App = () => {
           element={<AddArticlesPage />}
         />
         <Route path={pagesPathsAndNames[2].path} element={<AddSectionPage />} />
-        <Route path={pagesPathsAndNames[3].path} element={<P4 />} />
-        <Route path={pagesPathsAndNames[4].path} element={<Login />} />
+        <Route path={pagesPathsAndNames[3].path} element={<Login />} />
       </Routes>
     </Router>
   );
@@ -52,6 +52,8 @@ const App = () => {
     <>unknown media</>
   );
 
+  tryTokenLogin();
+  
   return layout;
 };
 

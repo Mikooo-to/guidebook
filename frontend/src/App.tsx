@@ -10,7 +10,6 @@ import { Box, useMediaQuery } from '@mui/material';
 import { pagesPathsAndNames } from './const';
 import { PhoneLayout } from './layouts/PhoneLayout/PhoneLayout';
 import { DesktopLayout } from './layouts/DesktopLayout/DesktopLayout';
-import { tryTokenLogin } from './pages/LoginPage/Login';
 
 const App = () => {
   const isDesktopOrLaptop = useMediaQuery('(min-width: 1224px)');
@@ -51,8 +50,6 @@ const App = () => {
   ) : (
     <>unknown media</>
   );
-
-  tryTokenLogin();
   
   return layout;
 };

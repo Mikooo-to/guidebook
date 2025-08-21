@@ -1,9 +1,6 @@
-let loggedIn = false;
 import { Box, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { TokenService } from "../../services/tokenService";
-export { loggedIn };
 export function Login() {
     const redir = useNavigate();
     const [email, setEmail] = useState('');
@@ -25,7 +22,6 @@ export function Login() {
                     throw new Error('No token in response');
                 }
                 localStorage.setItem('token', res.token);
-                loggedIn = true;
                 redir('/home');
             } catch (error) {
                 console.error(error);
@@ -75,18 +71,4 @@ export function Login() {
          <button onClick={LoginButtonHandler} style={{ fontSize: '20px', textAlign: 'center', marginTop: '20px'}}>Log In</button>
         </Box>
     )
-}
-export async function tryTokenLogin() {
-    const token = localStorage.getItem('token');
-    if (!token) return false
-    const tokenService = new TokenService();
-    await tokenService.post(token);
-    const validToken = await tokenService.get();
-    if (validToken) {
-        loggedIn = true;
-        return true;
-    }else{
-        localStorage.removeItem('token');
-        return false;
-    }
 }

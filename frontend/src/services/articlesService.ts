@@ -20,7 +20,7 @@ export class ArticlesService extends BaseService<TArticle> {
 
   post = async (data: TArticle) => {
     const response = await fetch(`${this.apiUrl}/articles`, {
-      ...this.init,
+      ...this.initWithToken,
       method: 'POST',
       body: JSON.stringify(data),
     });

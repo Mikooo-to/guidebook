@@ -1,8 +1,9 @@
 import { ShowArticlesPage } from './pages/TextPages/ShowArticles';
 import { AddArticlesPage } from './pages/TextPages/AddArticle';
 import { AddSectionPage } from './pages/TextPages/AddSection';
+import { Login } from './pages/LoginPage/Login';
 import { P4 } from './pages/TextPages/P4';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
 import { HomePage } from './pages/HomePage/HomePage';
 import { Box, useMediaQuery } from '@mui/material';
@@ -16,7 +17,7 @@ const App = () => {
   // const isBigScreen = useMediaQuery('(min-width: 1824px)');
   // const isPortrait = useMediaQuery('(orientation: portrait)');
   // const isRetina = useMediaQuery('(min-resolution: 2dppx)');
-
+ 
   const header = (
     <Box>
       header <br />
@@ -27,7 +28,8 @@ const App = () => {
   const rendredPages = (
     <Router>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<Navigate to="/home" />} />
+        <Route path="/home" element={<HomePage />} />
         <Route
           path={pagesPathsAndNames[0].path}
           element={<ShowArticlesPage />}
@@ -37,7 +39,7 @@ const App = () => {
           element={<AddArticlesPage />}
         />
         <Route path={pagesPathsAndNames[2].path} element={<AddSectionPage />} />
-        <Route path={pagesPathsAndNames[3].path} element={<P4 />} />
+        <Route path={pagesPathsAndNames[3].path} element={<Login />} />
       </Routes>
     </Router>
   );
@@ -48,7 +50,7 @@ const App = () => {
   ) : (
     <>unknown media</>
   );
-
+  
   return layout;
 };
 

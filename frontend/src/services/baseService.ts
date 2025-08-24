@@ -2,6 +2,7 @@ export abstract class BaseService<T> {
   protected init: RequestInit = {};
   protected apiUrl: string = '';
   protected key: string = '';
+  protected initWithToken: RequestInit = {};
 
   constructor() {
     this.apiUrl = process.env.REACT_APP_API_URL || '';
@@ -14,7 +15,16 @@ export abstract class BaseService<T> {
         'x-api-key': this.key,
         'Content-Type': 'application/json',
         Accept: 'application/json',
+        Origin: window.location.origin,  
+      },
+    };   
+    this.initWithToken = {
+      headers: {
+        'x-api-key': this.key,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
         Origin: window.location.origin,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     };
   }

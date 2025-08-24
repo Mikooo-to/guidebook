@@ -20,7 +20,7 @@ export class SectionsService extends BaseService<TSection> {
 
   post = async (data: TSection) => {
     const response = await fetch(`${this.apiUrl}/sections`, {
-      ...this.init,
+      ...this.initWithToken,
       method: 'POST',
       body: JSON.stringify(data),
     });

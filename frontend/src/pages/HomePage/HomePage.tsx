@@ -12,7 +12,8 @@ export function HomePage() {
     <HomePageContainer
       buttonsPosition={isDesktopOrLaptop ? 'flex-start' : 'flex-end'}
     >
-      {pagesPathsAndNames.map((p) => (
+      {pagesPathsAndNames  
+      .map((p) => (
         <PageLinkBtn
           key={p.path}
           text={p.linkText}

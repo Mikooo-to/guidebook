@@ -5,10 +5,12 @@ import { BaseService } from '../baseService';
 import { CreateUserDto } from './dto/createUser.dto';
 import * as bcrypt from 'bcrypt';
 import { UserRole } from './constants';
+const enableSuperadminCreation =
+  process.env.ENABLE_SUPERADMIN_CREATION === 'true';
 
 export class UsersService extends BaseService {
   async create(userDto: CreateUserDto): Promise<User> {
-    if (userDto.role === UserRole.SUPERADMIN) {
+    if (!enableSuperadminCreation && userDto.role === UserRole.SUPERADMIN) {
       throw new Error('Creation of new superadmins not allowed');
     }
     userDto.password = bcrypt.hashSync(userDto.password, 8);

@@ -127,6 +127,7 @@ export class MyStack extends cdk.Stack {
       environment: {
         MAIN_TABLE_NAME: mainTable.table.tableName,
         JWT_SECRET: 'secret-change-after-deploy',
+        ENABLE_SUPERADMIN_CREATION: 'false',
       },
     });
 

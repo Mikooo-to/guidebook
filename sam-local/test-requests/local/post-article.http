@@ -5,8 +5,8 @@ curl -X 'POST' \
   -H 'Content-Type: application/json' \
   -d '
 {
-  "content": "content4",
-  "name": "name4",
-  "section": "section3",
-  "status": "status4"
+  "content": "content5",
+  "name": "name5",
+  "sectionId": "2sSQ4pUbKUhKaaiuKjR8lzTUU0L",
+  "status": "status5"
 }'

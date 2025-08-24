@@ -1,11 +1,11 @@
 curl -X 'POST' \
-  'http://127.0.0.1:3000/users' \
-  -H 'x-api-key: DUMMYIDEXAMPLE' \
+  'https://api.ukr.lublin.life/users' \
+  -H 'x-api-key: 9DLl7Fjnem9pH5hwtr9yiaNck9JWKoRA7ajrASvJ' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '
 {
   "email": "siafin2010@gmail.com",
-  "password": "123456A!",
+  "password": "asdfasdf",
   "role": "superadmin"
 }'

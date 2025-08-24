@@ -1,3 +1,23 @@
+### login remote
+curl -X 'POST' \
+  'https://api.ukr.lublin.life/auth/login' \
+  -H 'x-api-key: 9DLl7Fjnem9pH5hwtr9yiaNck9JWKoRA7ajrASvJ' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "email": "siafin2010@gmail.com",
+  "password": "asdfasdf"
+}'
+###
+curl -X OPTIONS 'https://api.ukr.lublin.life/auth/login' \
+  -H 'Origin: http://ukr.lublin.life' \
+  -H 'Access-Control-Request-Method: POST' \
+  -H 'Access-Control-Request-Headers: content-type,x-api-key' \
+  -v
+
+
+
+### Login local
 # @name login
 curl -X 'POST' \
   'http://127.0.0.1:3000/auth/login' \

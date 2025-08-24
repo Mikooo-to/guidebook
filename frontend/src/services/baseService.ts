@@ -15,9 +15,9 @@ export abstract class BaseService<T> {
         'x-api-key': this.key,
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        Origin: window.location.origin,  
+        Origin: window.location.origin,
       },
-    };   
+    };
     this.initWithToken = {
       headers: {
         'x-api-key': this.key,
@@ -28,7 +28,7 @@ export abstract class BaseService<T> {
       },
     };
   }
-  abstract get(): Promise<T[]|null>;
+  abstract get(): Promise<T[] | null>;
   abstract post(data: T): any;
-  abstract prepare(data: Partial<T>): T|null;
+  abstract prepare(data: Partial<T>): T;
 }

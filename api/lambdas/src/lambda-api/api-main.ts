@@ -58,8 +58,8 @@ const api = createAPI();
 api.use((req: Request, res: Response, next: NextFunction) => {
   res.cors({
     origin: '*',
-    methods: 'GET, POST, PUT, DELETE',
-    headers: 'Content-Type, Authorization',
+    methods: 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+    headers: 'Content-Type, Authorization, x-api-key',
     maxAge: 86400,
   });
   next();

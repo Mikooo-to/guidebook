@@ -5,13 +5,13 @@ type TAuthParams = {
   password: string;
 }
 
-export class AuthsService extends BaseService<TAuthParams>{
+export class AuthsService extends BaseService<TAuthParams> {
   post = async (data: TAuthParams): Promise<boolean> => {
-    const {email, password} = data;
+    const { email, password } = data;
     try {
       const response = await fetch(`${this.apiUrl}/auth/login`, {
+        ...this.init,
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
       if (!response.ok) {
@@ -20,7 +20,7 @@ export class AuthsService extends BaseService<TAuthParams>{
       const res = await response.json();
       if (!res.token) {
         console.error('No token in response');
-        return false
+        return false;
       }
       localStorage.setItem('token', res.token);
       return true;
@@ -29,12 +29,12 @@ export class AuthsService extends BaseService<TAuthParams>{
       return false;
     }
   };
-  
-  get = async (): Promise<TAuthParams[]|null> => {
+
+  get = async (): Promise<TAuthParams[] | null> => {
     return null;
-  }
-  
-  prepare(data: Partial<TAuthParams>): TAuthParams|null {
-    return null;
+  };
+
+  prepare(data: TAuthParams): TAuthParams {
+    return data;
   }
 }

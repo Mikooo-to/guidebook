@@ -28,7 +28,7 @@ export abstract class BaseService<T> {
       },
     };
   }
-  abstract get(): Promise<T[]>;
+  abstract get(): Promise<T[]|null>;
   abstract post(data: T): any;
-  abstract prepare(data: Partial<T>): T;
+  abstract prepare(data: Partial<T>): T|null;
 }

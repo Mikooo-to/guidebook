@@ -126,6 +126,7 @@ export class MyStack extends cdk.Stack {
       role: lambdaCommonRole,
       environment: {
         MAIN_TABLE_NAME: mainTable.table.tableName,
+        JWT_SECRET: 'secret-change-after-deploy',
       },
     });
 

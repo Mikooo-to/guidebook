@@ -1,11 +1,9 @@
 curl -X 'POST' \
-  'http://127.0.0.1:3000/users' \
+  'http://127.0.0.1:3000/auth/login' \
   -H 'x-api-key: DUMMYIDEXAMPLE' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
-  -d '
-{
+  -d '{
   "email": "siafin2010@gmail.com",
-  "password": "123456A!",
-  "role": "superadmin"
+  "password": "123456A!"
 }'

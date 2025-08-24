@@ -32,6 +32,8 @@ Resources:
           API_KEY: DUMMYIDEXAMPLE
           AWS_REGION: localhost
           NODE_ENV: local
+          JWT_SECRET: secret-change-after-deploy
+          JWT_TTL: 2d
           MAIN_TABLE_NAME: maintableD4A14560
           DYNAMODB_ENDPOINT: http://db:8000
       Layers:

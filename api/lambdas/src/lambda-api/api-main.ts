@@ -20,6 +20,7 @@ import { SectionsController } from './modules/sections/sections.controller';
 import { ArticlesController } from './modules/articles/articles.controller';
 import { UsersController } from './modules/users/users.controller';
 import { User } from './entities/user.entity';
+import { AuthController } from './modules/auth/auth.controller';
 
 /**
  * typeDORM access
@@ -80,6 +81,12 @@ const usersController = new UsersController({
   api,
   dbConnection,
   path: '/users',
+});
+
+const authController = new AuthController({
+  api,
+  dbConnection,
+  path: '/auth',
 });
 
 export const mainHandler = async (

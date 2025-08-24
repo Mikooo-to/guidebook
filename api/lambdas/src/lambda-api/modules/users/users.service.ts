@@ -8,8 +8,8 @@ import { UserRole } from './constants';
 
 export class UsersService extends BaseService {
   async create(userDto: CreateUserDto): Promise<User> {
-    if (userDto.role === UserRole.ADMIN) {
-      throw new Error('Creation of new admins is not allowed');
+    if (userDto.role === UserRole.SUPERADMIN) {
+      throw new Error('Creation of new superadmins not allowed');
     }
     userDto.password = bcrypt.hashSync(userDto.password, 8);
     const user = Object.assign(new User(), userDto);
@@ -23,9 +23,14 @@ export class UsersService extends BaseService {
   }
 
   async findByEmail(email: string): Promise<User | undefined> {
-    const user = await this.dbConnection.entityManager.findOne<User>(User, {
+    const user = await this.dbConnection.entityManager.find<User>(User, {
       email,
     });
-    return user;
+    if (user.items.length > 1) {
+      throw new Error(
+        'Multiple users found with the same email. Delete one of them from the database.',
+      );
+    }
+    return user.items[0];
   }
 }

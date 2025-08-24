@@ -3,6 +3,7 @@ import {
   AUTO_GENERATE_ATTRIBUTE_STRATEGY,
   AutoGenerateAttribute,
   Entity,
+  INDEX_TYPE,
 } from '@typedorm/common';
 
 @Entity({
@@ -10,6 +11,12 @@ import {
   primaryKey: {
     partitionKey: 'USER',
     sortKey: 'USER#ID#{{id}}',
+  },
+  indexes: {
+    LSI1: {
+      sortKey: 'USER#EMAIL#{{email}}',
+      type: INDEX_TYPE.LSI,
+    },
   },
 })
 export class User {

@@ -4,6 +4,7 @@
 node_modules
 build_lambda_layer
 build
+**/.env
 
 # CDK asset staging directory
 .cdk.staging

@@ -10,6 +10,7 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.145",
+    "@types/bcrypt": "^6.0.0",
     "@types/jest": "^29.5.12",
     "@types/node": "20.14.9",
     "@types/pg": "^8.11.10",
@@ -28,6 +29,7 @@
     "@typedorm/core": "^1.15.4",
     "@typedorm/document-client": "^1.15.4",
     "aws-lambda": "^1.0.7",
+    "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "lambda-api": "^1.1.0",

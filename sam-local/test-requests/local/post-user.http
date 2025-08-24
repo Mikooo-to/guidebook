@@ -1,0 +1,11 @@
+curl -X 'POST' \
+  'http://127.0.0.1:3000/users' \
+  -H 'x-api-key: DUMMYIDEXAMPLE' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '
+{
+  "email": "siafin2010@gmail.com",
+  "password": "123456A!",
+  "role": "superadmin"
+}'

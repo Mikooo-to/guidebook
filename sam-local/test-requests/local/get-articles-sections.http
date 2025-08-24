@@ -1,0 +1,9 @@
+### get articles  
+GET http://127.0.0.1:3000/articles
+x-api-key: DUMMYIDEXAMPLE
+accept: application/json
+
+### get sections
+GET http://127.0.0.1:3000/sections
+x-api-key: DUMMYIDEXAMPLE
+accept: application/json

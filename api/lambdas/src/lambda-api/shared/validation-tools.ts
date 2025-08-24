@@ -9,7 +9,8 @@ export const validateOrRejectRequest = async <T extends object>(
   options?: ValidatorOptions,
 ): Promise<T | null> => {
   try {
-    const dto = plainToInstance(DtoClass, req.body, {
+    const body = req.body;
+    const dto = plainToInstance(DtoClass, body, {
       excludeExtraneousValues: true,
       strategy: 'excludeAll',
     });

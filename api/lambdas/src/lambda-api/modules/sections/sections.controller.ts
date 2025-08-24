@@ -10,6 +10,7 @@ export class SectionsController extends BaseController {
   constructor({ api, dbConnection, path }: TControllerParams) {
     const sectionsService = new SectionsService(dbConnection);
     api.post(`${path}`, async (req: Request, res: Response) => {
+      this.checkTokenAuth(req, res);
       const sectionDto = await validateOrRejectRequest(
         req,
         res,

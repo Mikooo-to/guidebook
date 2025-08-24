@@ -11,6 +11,7 @@ export class ArticlesController extends BaseController {
     const articlesService = new ArticlesService(dbConnection);
 
     api.post(`${path}`, async (req: Request, res: Response) => {
+      this.checkTokenAuth(req, res);
       const articleDto = await validateOrRejectRequest<CreateArticleDto>(
         req,
         res,

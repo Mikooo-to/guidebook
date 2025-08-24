@@ -18,6 +18,9 @@ import { DocumentClientV3 } from '@typedorm/document-client';
 import { DynamoDBClient, DynamoDBClientConfig } from '@aws-sdk/client-dynamodb';
 import { SectionsController } from './modules/sections/sections.controller';
 import { ArticlesController } from './modules/articles/articles.controller';
+import { UsersController } from './modules/users/users.controller';
+import { User } from './entities/user.entity';
+import { AuthController } from './modules/auth/auth.controller';
 
 /**
  * typeDORM access
@@ -46,7 +49,7 @@ const documentClient = new DocumentClientV3(
 
 const dbConnection = createConnection({
   table: mainTable({ tableName: process.env.MAIN_TABLE_NAME! }),
-  entities: [Article, Section],
+  entities: [Article, Section, User],
   documentClient,
 });
 
@@ -62,19 +65,29 @@ api.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-const sectionsController = new SectionsController(
-  {api,
+const sectionsController = new SectionsController({
+  api,
   dbConnection,
-  path: '/sections',}
-);
+  path: '/sections',
+});
 
-const articlesController = new ArticlesController(
-  {
-    api,
-    dbConnection,
-    path: '/articles',
-  }
-);
+const articlesController = new ArticlesController({
+  api,
+  dbConnection,
+  path: '/articles',
+});
+
+const usersController = new UsersController({
+  api,
+  dbConnection,
+  path: '/users',
+});
+
+const authController = new AuthController({
+  api,
+  dbConnection,
+  path: '/auth',
+});
 
 export const mainHandler = async (
   event: APIGatewayProxyEvent,

@@ -12,11 +12,7 @@ export class AuthController extends BaseController {
     const authService = new AuthService(dbConnection);
     super(api, dbConnection);
     api.post(`${path}/login`, async (req: Request, res: Response) => {
-      const authDto = await validateOrRejectRequest(
-        req,
-        res,
-        AuthDto,
-      );
+      const authDto = await validateOrRejectRequest(req, res, AuthDto);
       if (!authDto) return;
 
       const token = await authService.login(authDto);

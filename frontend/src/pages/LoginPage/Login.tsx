@@ -1,74 +1,75 @@
-import { Box, TextField } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { Box, TextField } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { AuthsService } from '../../services/authsService';
+import styled from '@emotion/styled';
 export function Login() {
-    const redir = useNavigate();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+  const redir = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-    async function LoginButtonHandler() {
-            try {
-                const response = await fetch("http://localhost:3000/auth", {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({email, password}),
-                });
-                if (!response.ok) {
-                    throw new Error(`Response status: ${response.status}`);
-                }
-                const res = await response.json();
-                if(!res.token) {
-                    console.error('No token in response');
-                    throw new Error('No token in response');
-                }
-                localStorage.setItem('token', res.token);
-                redir('/home');
-            } catch (error) {
-                console.error(error);
-                alert("error");
-            }
-      }
-    return (
-        <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-        >
-           
-            <Box className="L1" style={{ fontSize: '30px', textAlign: 'center' }}>
-                <h1>Log In</h1>
-            </Box>
+  async function LoginButtonHandler() {
+    const authsService = new AuthsService();
+    const isLoginSuccess = await authsService.post({ email, password });
+    if (isLoginSuccess) {
+      redir('/home');
+    } else {
+      alert('wrong email or password');
+    }
+  }
+  return (
+    <LoginDialog>
+      <Box style={{ fontSize: '30px', textAlign: 'center' }}>
+        <h1>Log In</h1>
+      </Box>
 
-            <TextField 
-            variant="filled" 
-            label="Email" 
-            sx={{
-                '& .MuiFilledInput-root': {
-                  backgroundColor: '#e5e5e5',
-                  '&:hover': { backgroundColor: '#ddd' },
-                  '&.Mui-focused': { backgroundColor: '#cacaca' },
-                  borderRadius: 2,
-                },
-            }}
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)} />
+      <MyInputTextField
+        variant="filled"
+        label="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
 
-            <TextField 
-            variant="filled" 
-            label="Password" 
-            sx={{
-                '& .MuiFilledInput-root': {
-                  backgroundColor: '#e5e5e5',
-                  '&:hover': { backgroundColor: '#ddd' },
-                  '&.Mui-focused': { backgroundColor: '#cacaca' },
-                  borderRadius: 2,
-                },
-            }}
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} />
+      <MyInputTextField
+        type="password"
+        variant="filled"
+        label="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
 
-         <button onClick={LoginButtonHandler} style={{ fontSize: '20px', textAlign: 'center', marginTop: '20px'}}>Log In</button>
-        </Box>
-    )
+      <button
+        onClick={LoginButtonHandler}
+        style={{ fontSize: '20px', textAlign: 'center', marginTop: '20px' }}
+      >
+        Log In
+      </button>
+      <button
+        onClick={() => redir('/home')}
+        style={{ fontSize: '20px', textAlign: 'center', marginTop: '20px' }}
+      >
+        Back
+      </button>
+    </LoginDialog>
+  );
 }
+
+const LoginDialog = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const MyInputTextField = styled(TextField)`
+  & .MuiFilledInput-root {
+    background-color: #e5e5e5;
+    &:hover {
+      background-color: #ddd;
+    }
+    &.Mui-focused {
+      background-color: #cacaca;
+    }
+    border-radius: 6px;
+  }
+`;

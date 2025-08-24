@@ -2,7 +2,6 @@ import { ShowArticlesPage } from './pages/TextPages/ShowArticles';
 import { AddArticlesPage } from './pages/TextPages/AddArticle';
 import { AddSectionPage } from './pages/TextPages/AddSection';
 import { Login } from './pages/LoginPage/Login';
-import { P4 } from './pages/TextPages/P4';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
 import { HomePage } from './pages/HomePage/HomePage';

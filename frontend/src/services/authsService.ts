@@ -18,11 +18,11 @@ export class AuthsService extends BaseService<TAuthParams> {
         throw new Error(`Response status: ${response.status}`);
       }
       const res = await response.json();
-      if (!res.token) {
+      if (!res.accessToken) {
         console.error('No token in response');
         return false;
       }
-      localStorage.setItem('token', res.token);
+      localStorage.setItem('token', res.accessToken);
       return true;
     } catch (error) {
       console.error(error);
